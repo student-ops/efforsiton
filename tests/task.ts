@@ -1,4 +1,4 @@
-import { TaskForInsert } from "../src/lib/task"
+import { TaskForInsert } from "../src/types/project"
 import prisma from "../src/lib/prisma"
 import { FetchTasks } from "../src/lib/task"
 export async function InsertTask(task: TaskForInsert) {

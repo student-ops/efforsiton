@@ -10,6 +10,7 @@ type Repo = {
     id: number
     name: string
 }
+
 export const FetchProjectFromApi = async () => {
     const array = await fetch("/api/myprojects", {
         method: "POST",

@@ -1,27 +1,43 @@
-import { verify, VerifyErrors } from "jsonwebtoken"
-import cookie from "cookie"
-import { NextApiRequest, NextApiResponse } from "next"
+import fetch from "node-fetch"
+import dotenv from "dotenv" // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 
-type DecodedToken = {
-    // Define the types of the properties in the decoded token here
+dotenv.config()
+
+const owner = "student-ops"
+const repo = "efforsiton"
+const url = `https://api.github.com/repos/${owner}/${repo}/hooks`
+const token = process.env.GITHUB_AUTH_TOKEN
+
+console.log(token)
+const headers = {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${token}`,
+    "X-GitHub-Api-Version": "2022-11-28",
 }
 
-export default function myHandler(req: NextApiRequest, res: NextApiResponse) {
-    const cookies = cookie.parse(req.headers.cookie || "")
+const data = {
+    name: "web",
+    active: true,
+    events: ["push", "pull_request"],
+    config: {
+        url: "https://example.com/api/webhook",
+        content_type: "json",
+        insecure_ssl: "0",
+    },
+}
 
-    const sessionToken = cookies["next-auth.session-token"]
-
+async function createWebhook() {
     try {
-        const decodedToken = verify(
-            sessionToken,
-            process.env.JWT_SECRET
-        ) as DecodedToken
-        // If verification is successful, the decoded token will be returned here
-    } catch (err) {
-        const error = err as VerifyErrors
-        res.status(401).json({ message: error.message })
-        return
+        const response = await fetch(url, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(data),
+        })
+        const json = await response.json()
+        console.log(json)
+    } catch (error) {
+        console.error(error)
     }
-
-    // Your code here
 }
+
+createWebhook()
