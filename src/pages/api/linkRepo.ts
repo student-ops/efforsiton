@@ -5,7 +5,7 @@ import { AddLinkedRepo, DeleteLinkedRepo } from "../../lib/project"
 import { Session } from "next-auth"
 import prisma from "../../lib/prisma"
 
-const urltmp = " https://0e4e-133-106-216-213.jp.ngrok.io/api/webhook"
+const urltmp = "https://0e4e-133-106-216-213.jp.ngrok.io/api/webhook"
 
 export default async function handler(
     req: NextApiRequest,
