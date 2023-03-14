@@ -7,7 +7,9 @@ export default async function handler(
     const payload = req.body
 
     if (payload) {
-        const parsedPayload = await JSON.parse(payload.payload)
+        const parsedPayload = payload.payload
+            ? JSON.parse(payload.payload)
+            : payload
         const id = parsedPayload.repository?.id
         console.log(id)
         console.log("###########################")
