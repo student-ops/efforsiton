@@ -12,7 +12,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     if (!taskid.taskid) {
         res.status(400).send("task id is null\n")
     }
-    console.log(taskid)
     await AcheiveTask(taskid.taskid! as string)
         .then(() => {
             res.status(200).send("accepted")

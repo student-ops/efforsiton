@@ -4,6 +4,7 @@ export type Project = {
     description: string | null
     createdAt: string
     userId: string
+    linked: string
 }
 
 export interface Task {

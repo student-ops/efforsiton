@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { NextPage, GetStaticProps } from "next"
 import NButton from "../components/normalButton"
 import ProjectList from "../components/projectList"
-import { Project } from "../lib/project"
+import { Project } from "../types/project"
 
 type Repo = {
     id: number
@@ -56,12 +56,12 @@ const Home: NextPage = () => {
     const userName = session?.user?.name
     const [repos, setRepos] = useState<Repo[]>([])
     const [myProjects, setMyProjects] = useState<Project[]>([])
-    console.log(session?.user.accessToken)
-
     const setproject = async () => {
         const projects = await FetchProjectFromApi()
         setMyProjects(projects!)
     }
+    // console.log(session?.user.name)
+    // console.log(session?.user.image)
     useEffect(() => {
         if (status === "authenticated") {
             fetchRepos(session).then((data) => setRepos(data!))

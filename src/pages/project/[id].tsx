@@ -1,4 +1,4 @@
-import { Project } from "../../types/project"
+import { Project, Task } from "../../types/project"
 import { GetServerSideProps } from "next"
 import { CustomNextPage } from "../../types/custom-next-page"
 import { FetchProjectFromId } from "../../lib/project"
@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 import TaskInputField from "../../components/taskinputfield"
 import TaskViwer from "../../components/tasksViwer"
 import { useEffect, useState, createContext, useContext } from "react"
-import { Task } from "../../types/project"
+import LinkRepo from "../../components/linkRepo"
 
 type Props = {
     Project: Project
@@ -91,7 +91,6 @@ const Projectpage: CustomNextPage<Props> = (props) => {
             })
             setAcheivedTasks(newAcheivedTasks)
             setUnacheivedTasks(newUnacheivedTasks)
-            console.log(newUnacheivedTasks, newAcheivedTasks)
         }
     }, [tasks])
     useEffect(() => {
@@ -121,12 +120,26 @@ const Projectpage: CustomNextPage<Props> = (props) => {
                 <div className="w-1/5">Your projects</div>
                 <div className="w-4/5">
                     <div className="w-full">
-                        <h1 className="text-xl font-bold">{project.name}</h1>
-                        <p>{project.description}</p>
-                        <p>
-                            created by{" "}
-                            <span className="font-bold">{userName}</span>
-                        </p>
+                        <div className="w-full flex justify-between">
+                            <div className="3/5">
+                                <h1 className="text-xl font-bold">
+                                    {project.name}
+                                </h1>
+                                <p>{project.description}</p>
+                                <p>
+                                    created by{" "}
+                                    <span className="font-bold">
+                                        {userName}
+                                    </span>
+                                </p>
+                            </div>
+                            <div className="w-2/5 float-right">
+                                <LinkRepo
+                                    session={session!}
+                                    project={project!}
+                                />
+                            </div>
+                        </div>
                         <SelectorContext.Provider value={value}>
                             <TaskViwer
                                 acheivedtasks={acheivedTasks}

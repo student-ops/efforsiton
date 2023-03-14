@@ -6,9 +6,9 @@ dotenv.config()
 const owner = "student-ops"
 const repo = "efforsiton"
 const url = `https://api.github.com/repos/${owner}/${repo}/hooks`
-const token = process.env.GITHUB_AUTH_TOKEN
+// const token = process.env.GITHUB_AUTH_TOKEN
 
-console.log(token)
+// console.log(token)
 const headers = {
     Accept: "application/vnd.github+json",
     Authorization: `Bearer ${token}`,

@@ -69,6 +69,7 @@ export async function FetchMyProjects(username: string) {
         description: project.description !== null ? project.description : null,
         createdAt: project.createdAt.toISOString(),
         userId: project.userId,
+        linked: project.linked,
     }))
     // console.log(serializedProjects)
     return serializedProjects
@@ -85,7 +86,6 @@ export const FetchProjectsFromDtabase = async () => {
         })
         .catch((err) => {
             // must Implement error handling
-            return null
         })
     return array
 }
@@ -98,4 +98,16 @@ export const FetchProjectFromId = async (id: string) => {
     })
     const serializedproject = JSON.parse(JSON.stringify(project))
     return serializedproject
+}
+
+export const AddLinkedRepo = async (projectid: string, repo: string) => {
+    const project = await prisma.projects.update({
+        where: {
+            id: projectid,
+        },
+        data: {
+            linked: repo,
+        },
+    })
+    return project
 }

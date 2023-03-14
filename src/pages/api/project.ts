@@ -8,7 +8,6 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const session = await getSession({ req })
-    // not neccesary
     if (!session) {
         res.status(401).json({ error: "Unauthorized" })
         return
@@ -20,11 +19,9 @@ export default async function handler(
         payload.userName = username
         if (payload !== null && payload !== undefined) {
             await InsertProject(payload).then(() => {
-                console.log(payload)
                 res.status(200).send("")
             })
         } else {
-            console.log("api error")
             res.status(400).send("")
         }
     }

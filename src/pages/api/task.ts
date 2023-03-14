@@ -41,7 +41,6 @@ export default async function handler(
         }
         if (req.method === "GET") {
             var tasks = await FetchTasks(projectid.projectid! as string)
-            console.log(tasks)
             res.status(200).json({ tasks })
         }
         return
