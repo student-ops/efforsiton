@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { useSession, signIn, signOut } from "next-auth/react"
 
+import Image from "next/image"
+
 export default function Head() {
     const { data: session, status } = useSession()
     let myJsx: JSX.Element | null = null
@@ -25,7 +27,7 @@ export default function Head() {
     )
 
     myJsx = (
-        <header className="text-gray-600 body-font">
+        <header className="text-gray-600 body-font h-30">
             <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
                 <Link
                     href="/"
@@ -45,12 +47,23 @@ export default function Head() {
                 </Link>
                 <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
                     <Link href="/projects" className="mr-5 hover:text-gray-900">
-                        Project
+                        Create
                     </Link>
-                    <a className="mr-5 hover:text-gray-900">Second Link</a>
-                    <a className="mr-5 hover:text-gray-900">Third Link</a>
-                    <a className="mr-5 hover:text-gray-900">Fourth Link</a>
+                    <Link href="/about" className="mr-5 hover:text-gray-900">
+                        About
+                    </Link>
+                    <Link href="/github" className="mr-5 hover:text-gray-900">
+                        Github
+                    </Link>
                 </nav>
+                <div>
+                    <a>{session?.user.name}</a>
+                    <img
+                        className="h-12 w-12 rounded-full"
+                        src={session?.user.image!}
+                        alt=""
+                    />
+                </div>
                 {loginButton}
             </div>
         </header>

@@ -1,27 +1,9 @@
-import prisma from "../src/lib/prisma"
-
-export async function AcheiveTask(taskid: string) {
-    const task = await prisma.tasks.findUnique({
-        where: {
-            id: taskid,
-        },
-    })
-
-    if (task?.acheived) {
-        console.log("already acheived")
-        return // already achieved, no need to update
-    }
-
-    await prisma.tasks.update({
-        where: {
-            id: taskid,
-        },
-        data: {
-            acheived: true,
-            acheivedAt: new Date(),
-        },
-    })
-}
 export {}
+async function fetchGithubLogin(userid: string) {
+    const response = await fetch(`https://api.github.com/user/${userid}`)
+    const data = await response.json()
+    console.log(data)
+    console.log(data.login)
+}
 
-AcheiveTask("clf1qwjn10001um0exewft1of")
+fetchGithubLogin("106237293")

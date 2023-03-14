@@ -57,6 +57,7 @@ import { useState, useEffect, useRef } from "react"
 import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 import { Project } from "../types/project"
+import { DeleteLinkedRepo } from "../lib/project"
 
 interface Repository {
     id: number
@@ -115,6 +116,14 @@ const LinkRepo: React.FC<Props> = ({ session, project }) => {
         setLinkedRepo(selectedRepoUrl)
         return null
     }
+    const DeleteLinkedRepo = () => {
+        const url = `/api/linkRepo?projectid=${project.id}`
+        fetch(url, {
+            method: "DELETE",
+        })
+        setLinkedRepo("")
+        return null
+    }
 
     if (linkedRepo === "" || !linkedRepo) {
         return (
@@ -136,9 +145,16 @@ const LinkRepo: React.FC<Props> = ({ session, project }) => {
             </>
         )
     } else {
+        const reponame = linkedRepo.split("/").pop()
         return (
             <>
-                <p>{linkedRepo}</p>
+                <p className="text-lg">
+                    linked to{" "}
+                    <a className="text-blue-500 underline" href={linkedRepo}>
+                        {reponame}
+                    </a>
+                    <button onClick={DeleteLinkedRepo}>detatch</button>
+                </p>
             </>
         )
     }

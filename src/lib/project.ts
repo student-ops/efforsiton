@@ -111,3 +111,15 @@ export const AddLinkedRepo = async (projectid: string, repo: string) => {
     })
     return project
 }
+
+export const DeleteLinkedRepo = async (projectid: string) => {
+    const result = await prisma.projects.update({
+        where: {
+            id: projectid,
+        },
+        data: {
+            linked: null,
+        },
+    })
+    return result
+}

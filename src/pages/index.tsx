@@ -60,7 +60,7 @@ const Home: NextPage = () => {
         const projects = await FetchProjectFromApi()
         setMyProjects(projects!)
     }
-    // console.log(session?.user.name)
+    console.log(session?.user.accessToken)
     // console.log(session?.user.image)
     useEffect(() => {
         if (status === "authenticated") {
