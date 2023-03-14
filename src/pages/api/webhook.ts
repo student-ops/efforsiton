@@ -4,6 +4,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    console.log(req.body)
     const payload = await req.body
     const parsedPayload = JSON.parse(payload)
     const id = parsedPayload.repository.id
