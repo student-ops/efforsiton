@@ -1,5 +1,12 @@
 version: "3"
 services:
+    db:
+        image: postgres:latest
+        container_name: postgres
+        environment:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: db
     app:
         build:
             context: .
@@ -9,11 +16,4 @@ services:
         environment:
             NODE_ENV: "development"
         depends_on:
-            - postgres
-    db:
-        image: postgres
-        container_name: postgres
-        environment:
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: password
-            POSTGRES_DB: db
+            - db
