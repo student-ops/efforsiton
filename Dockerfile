@@ -13,7 +13,7 @@ COPY ./*.js /app
 COPY .env /app
 
 # Install any needed packages specified in package.json
-RUN npm install -g npm@9.5.1 -y
+RUN npm install -g npm@9.6.1 -y
 RUN npm install
 
 # Make port 80 available to the world outside this container
