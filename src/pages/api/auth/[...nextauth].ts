@@ -33,10 +33,6 @@ export const authOptions: NextAuthOptions = {
         maxAge: 60 * 60 * 24 * 14, // 30 days
     },
     adapter: PrismaAdapter(prisma),
-    // adapter: prismaAdapter,
-    pages: {
-        signIn: "/auth/signin",
-    },
 }
 
 export default NextAuth(authOptions)

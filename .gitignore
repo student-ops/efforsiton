@@ -39,4 +39,5 @@ next-env.d.ts
 
 # prisma
 src/prisma/migrations
+prisma/migrations
 tests/curl.txt

@@ -16,7 +16,7 @@ const protectedApiRoute: NextApiHandler = async (req, res) => {
         const myprjects = await FetchMyProjects(username!)
         // let a = JSON.stringify(myprjects)
         // console.log(a)
-        console.log(myprjects)
+        // console.log(myprjects)
 
         res.status(200).json({ myprjects })
     } catch (error) {

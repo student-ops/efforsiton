@@ -147,9 +147,14 @@ const Projectpage: CustomNextPage<Props> = (props) => {
                             />
                         </SelectorContext.Provider>
                     </div>
-                    <div className="flex w-full my-3">
+                    <div className="flex  justify-between w-full my-3">
                         <div id="buttons" className="w-2/5">
-                            <button onClick={markSelectedTasksAsAchieved}>
+                            <button className=" inline-flex items-center border  text-gray-400  border-gray-300 py-1 px-3 focus:outline-none hover:bg-gray-800 rounded text-base mt-4 md:mt-0">
+                                delete
+                            </button>
+                            <button
+                                className="text-gray-200 inline-flex float-right items-center bg-green-400 border-0 py-1 px-3 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0"
+                                onClick={markSelectedTasksAsAchieved}>
                                 acheive
                             </button>
                         </div>

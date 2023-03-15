@@ -1,18 +1,22 @@
 import Link from "next/link"
 import { useSession, signIn, signOut } from "next-auth/react"
 
-import Image from "next/image"
-
 export default function Head() {
     const { data: session, status } = useSession()
     let myJsx: JSX.Element | null = null
-    let loginButton: JSX.Element = (
+    const bgColor =
+        status === "authenticated"
+            ? "inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
+            : "text-white inline-flex items-center bg-indigo-500 border-0 py-1 px-3 focus:outline-none hover:bg-indigo-600 rounded text-base mt-4 md:mt-0"
+    const loginText = status === "authenticated" ? "Log out" : "Login"
+
+    const loginButton = (
         <button
-            className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
+            className={bgColor}
             onClick={() =>
                 status === "authenticated" ? signOut() : signIn("github")
             }>
-            {status === "authenticated" ? "Log out" : "Login"}
+            {loginText}
             <svg
                 fill="none"
                 stroke="currentColor"
@@ -56,14 +60,16 @@ export default function Head() {
                         Github
                     </Link>
                 </nav>
-                <div>
-                    <a>{session?.user.name}</a>
-                    <img
-                        className="h-12 w-12 rounded-full"
-                        src={session?.user.image!}
-                        alt=""
-                    />
-                </div>
+                {status === "authenticated" ? (
+                    <div>
+                        <a>{session?.user.name}</a>
+                        <img
+                            className="h-12 w-12 rounded-full"
+                            src={session?.user.image!}
+                            alt=""
+                        />
+                    </div>
+                ) : null}
                 {loginButton}
             </div>
         </header>

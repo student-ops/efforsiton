@@ -96,8 +96,15 @@ const Home: NextPage = () => {
     }
     return (
         <>
-            <span>Not signed in.</span>
-            <button onClick={() => signIn("github")}>Sign in</button>
+            <h1>
+                You are not signed in. Click{" "}
+                <button
+                    className="text-blue-400"
+                    onClick={() => signIn("github")}>
+                    here
+                </button>{" "}
+                to login.
+            </h1>
         </>
     )
 }
