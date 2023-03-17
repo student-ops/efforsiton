@@ -1,4 +1,4 @@
-FROM node:18.14
+FROM node:18.14.2-alpine
 
 # Set the working directory to /app
 RUN mkdir -p /app/prisma
@@ -13,7 +13,7 @@ COPY ./*.js /app
 COPY .env /app
 
 # Install any needed packages specified in package.json
-RUN npm install -g npm@9.6.1 -y
+# RUN npm install -g npm@9.6.1 -y
 RUN npm install
 
 # Make port 80 available to the world outside this container
