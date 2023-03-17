@@ -5,7 +5,7 @@ export async function InsertTask(task: TaskForInsert) {
     await prisma.tasks.create({
         data: {
             parentId: task.parentId ?? null,
-            belongsTo: task.belongsTo,
+            belongs: task.belongsTo,
             name: task.name,
             description: task.description ?? null,
         },

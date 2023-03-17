@@ -26,7 +26,7 @@ const data = {
     },
 }
 
-async function createWebhook() {
+async function CreateWebhookByApi() {
     try {
         const response = await fetch(url, {
             method: "POST",
@@ -40,4 +40,4 @@ async function createWebhook() {
     }
 }
 
-createWebhook()
+CreateWebhookByApi()

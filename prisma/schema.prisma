@@ -84,18 +84,18 @@ model Sugestions {
 
 model Webhook {
   id            String          @id @default(cuid())
-  url           String?
-  events        String[]
+  repoName      String
+  owner         String
   belongs       String
   belongsTo     Projects        @relation(fields: [belongs], references: [id], onDelete: Cascade)
   webhookpushed Webhookpushed[]
 }
 
 model Webhookpushed {
-  id        String   @id @default(cuid())
-  data      String
-  createdAt DateTime @default(now())
-  checked   Boolean  @default(false)
+  id        String  @id @default(cuid())
+  timestamp String
+  after_sha String
+  checked   Boolean @default(false)
   belongs   String
-  belongsTo Webhook  @relation(fields: [belongs], references: [id], onDelete: Cascade)
+  belongsTo Webhook @relation(fields: [belongs], references: [id], onDelete: Cascade)
 }

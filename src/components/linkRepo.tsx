@@ -55,9 +55,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Session } from "next-auth"
-import { useSession } from "next-auth/react"
 import { Project } from "../types/project"
-import { DeleteLinkedRepo } from "../lib/project"
 import { cancelButton, smallButton } from "../styles/templates"
 
 interface Repository {

@@ -13,6 +13,8 @@ export default async function handler(
         ? JSON.parse(payload.payload)
         : payload
     const after_sha = parsedPayload.after
+    const message = parsedPayload.head_commit?.message
+    const timestamp = parsedPayload.head_commit?.timestamp
     const owner = parsedPayload.repository?.owner?.name
     const repo_name = parsedPayload.repository?.name
     const files = await getCommitFiles(owner, repo_name, after_sha)
@@ -21,4 +23,5 @@ export default async function handler(
 
     await res.status(200).end()
     console.log(files)
+    return
 }
