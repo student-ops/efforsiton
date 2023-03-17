@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { getCommitFiles } from "../../lib/gptapi"
 
 export default async function handler(
     req: NextApiRequest,
@@ -14,14 +15,16 @@ export default async function handler(
         const after_sha = parsedPayload.after
         const owner = parsedPayload.repository?.owner?.name
         const repo_name = parsedPayload.repository?.name
-        console.log("id: ", id)
-        console.log("after_sha: ", after_sha)
-        console.log("owner: ", owner)
-        console.log("repo_name: ", repo_name)
-        console.log("###########################")
-        console.log(parsedPayload)
-        console.log("###########################")
+        // console.log("id: ", id)
+        // console.log("after_sha: ", after_sha)
+        // console.log("owner: ", owner)
+        // console.log("repo_name: ", repo_name)
+        // console.log("###########################")
+        // console.log(parsedPayload)
+        // console.log("###########################")
+        getCommitFiles(owner, repo_name, after_sha).then((files) => {
+            console.log(files)
+        })
     }
-
     await res.status(200).end()
 }
