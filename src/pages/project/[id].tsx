@@ -106,6 +106,7 @@ const Projectpage: CustomNextPage<Props> = (props) => {
             if (selectedTasksId.includes(task.id)) {
                 achieveTask(task.id)
                 updatedAcheivedTasks.push({ ...task, acheived: true })
+                task.acheived = true
                 return false
             }
             return true

@@ -4,7 +4,7 @@ import { TaskForInsert } from "../types/project"
 export async function FetchTasks(projectId: string) {
     const tasks = await prisma.tasks.findMany({
         where: {
-            belongsTo: projectId,
+            belongs: projectId,
         },
     })
     return tasks
@@ -15,7 +15,7 @@ export async function InsertTask(task: TaskForInsert) {
         .create({
             data: {
                 parentId: task.parentId ?? null,
-                belongsTo: task.belongsTo,
+                belongs: task.belongsTo,
                 name: task.name,
                 description: task.description ?? null,
                 acheivedAt: null,

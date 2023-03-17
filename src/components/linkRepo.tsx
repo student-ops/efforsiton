@@ -58,6 +58,7 @@ import { Session } from "next-auth"
 import { useSession } from "next-auth/react"
 import { Project } from "../types/project"
 import { DeleteLinkedRepo } from "../lib/project"
+import { cancelButton, smallButton } from "../styles/templates"
 
 interface Repository {
     id: number
@@ -128,20 +129,36 @@ const LinkRepo: React.FC<Props> = ({ session, project }) => {
     if (linkedRepo === "" || !linkedRepo) {
         return (
             <>
-                <select
-                    className="bg-white rounded p-2 shadow-lg"
-                    onChange={handleRepoChange}
-                    value={selectedRepoUrl}>
-                    <option value={""}>Link repository</option>
-                    {repos.map((repo) => (
-                        <option key={repo.id} value={repo.html_url}>
-                            {repo.name}
-                        </option>
-                    ))}
-                </select>
-                {selectedRepoUrl && (
-                    <button onClick={handleLinkRepo}>Link Repository</button>
-                )}
+                <div className="w-full flex">
+                    <select
+                        className="bg-white rounded p-2 shadow-lg"
+                        onChange={handleRepoChange}
+                        value={selectedRepoUrl}>
+                        <option value={""}>Link repository</option>
+                        {repos.map((repo) => (
+                            <option key={repo.id} value={repo.html_url}>
+                                {repo.name}
+                            </option>
+                        ))}
+                    </select>
+                    {selectedRepoUrl && (
+                        <div className="flex flex-col">
+                            {" "}
+                            <button
+                                onClick={handleLinkRepo}
+                                className={smallButton}>
+                                Link Repository
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setSelectedRepoUrl("")
+                                }}
+                                className={cancelButton}>
+                                cancel
+                            </button>
+                        </div>
+                    )}
+                </div>
             </>
         )
     } else {
