@@ -11,9 +11,16 @@ export default async function handler(
             ? JSON.parse(payload.payload)
             : payload
         const id = parsedPayload.repository?.id
-        console.log(id)
+        const after_sha = parsedPayload.after
+        const owner = parsedPayload.repository?.owner?.name
+        const repo_name = parsedPayload.repository?.name
+        console.log("id: ", id)
+        console.log("after_sha: ", after_sha)
+        console.log("owner: ", owner)
+        console.log("repo_name: ", repo_name)
         console.log("###########################")
         console.log(parsedPayload)
+        console.log("###########################")
     }
 
     await res.status(200).end()
