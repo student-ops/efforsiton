@@ -5,3 +5,9 @@
 ## Tech Stack
 
 ## Todo
+
+## 修正ポイント
+
+webhook api
+
+コードの更新量が多い場合の引き継ぎ方
