@@ -45,7 +45,7 @@ export default async function handler(
         .then((files) => files)
         .catch((err) => console.log(err))
 
-    console.log(commitcontent)
+    console.log(commitcontent[0])
 
     return
 }
