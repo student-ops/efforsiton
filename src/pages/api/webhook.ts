@@ -28,6 +28,7 @@ export default async function handler(
     if (!webhookid) return res.status(401).end("webhook not found")
     const webhookcommit: webhookCommit = {
         timestamp: parsedPayload.head_commit?.timestamp,
+        comment: parsedPayload.head_commit?.message,
         after_sha: after_sha,
         belongs: webhookid,
     }
@@ -38,6 +39,7 @@ export default async function handler(
         id: result.id,
         timestamp: webhookcommit.timestamp,
         after_sha: webhookcommit.after_sha,
+        comment: webhookcommit.comment,
     })
     // const message = parsedPayload.head_commit?.message
     // const timestamp = parsedPayload.head_commit?.timestamp
@@ -50,6 +52,7 @@ export default async function handler(
                         timestamp: commit.timestamp,
                         filename: file.filename,
                         contents: file.contents,
+                        comment: commit.comment,
                     }))
                 )
                 .catch((err) => {

@@ -91,10 +91,11 @@ CREATE TABLE "Webhook" (
 -- CreateTable
 CREATE TABLE "WebhookCommit" (
     "id" TEXT NOT NULL,
+    "belongs" TEXT NOT NULL,
     "timestamp" TEXT NOT NULL,
     "after_sha" TEXT NOT NULL,
+    "comment" TEXT NOT NULL,
     "checked" BOOLEAN NOT NULL DEFAULT false,
-    "belongs" TEXT NOT NULL,
 
     CONSTRAINT "WebhookCommit_pkey" PRIMARY KEY ("id")
 );

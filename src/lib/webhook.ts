@@ -95,6 +95,7 @@ export const InsertWebhookCommit = async (pushed: webhookCommit) => {
             timestamp: pushed.timestamp,
             after_sha: pushed.after_sha,
             belongs: pushed.belongs,
+            comment: pushed.comment,
         },
     })
     return result

@@ -93,9 +93,10 @@ model Webhook {
 
 model WebhookCommit {
   id        String  @id @default(cuid())
+  belongs   String
   timestamp String
   after_sha String
+  comment   String
   checked   Boolean @default(false)
-  belongs   String
   belongsTo Webhook @relation(fields: [belongs], references: [id], onDelete: Cascade)
 }
