@@ -39,7 +39,6 @@ export default async function handler(
         timestamp: webhookcommit.timestamp,
         after_sha: webhookcommit.after_sha,
     })
-    console.log(uncheckedCommit)
     // const message = parsedPayload.head_commit?.message
     // const timestamp = parsedPayload.head_commit?.timestamp
     // Process each commit and fetch the associated files
