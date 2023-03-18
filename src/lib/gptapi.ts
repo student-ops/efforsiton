@@ -79,12 +79,15 @@ export function CreatePrompt(
         )
         .join(",\n  ")
     let promptMessage = `Commnad:
-Guess the completed task from the updated content of the code. Answer the task name only in the following format:\n
-########
+Guess the completed task from the updated content of the code.
+Answer only in the following format:\n
+
 [
     {"name": "taskA", "completed": true},
     {"name": "taskB", "completed": false}
 ]
+
+
 #################
 
 update data:
