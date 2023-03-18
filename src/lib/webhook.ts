@@ -4,36 +4,40 @@ import prisma from "./prisma"
 
 const urltmp = "https://fcc3-133-106-51-131.jp.ngrok.io"
 
-export const FetchGithubUser = async (session_username: string) => {
-    const fetched = await prisma.user
-        .findUnique({
-            where: {
-                name: session_username,
-            },
-        })
-        .then((res) => {
-            console.log(res)
-            return res
-        })
-    console.log(fetched?.image)
-    const regex = /\/u\/(\d+)\?/
-    const match = regex.exec(fetched?.image!)
-    let accountid: string = ""
+export async function FetchGithubUser(session_username: string) {
+    try {
+        const fetched = await prisma.user
+            .findUnique({
+                where: {
+                    name: session_username,
+                },
+            })
+            .then((res) => {
+                console.log(res)
+                return res
+            })
+        console.log(fetched?.image)
+        const regex = /\/u\/(\d+)\?/
+        const match = regex.exec(fetched?.image!)
+        let accountid: string = ""
 
-    if (match) {
-        accountid = match[1]
+        if (match) {
+            accountid = match[1]
+        }
+        if (!accountid) return
+        const response = await fetch(`https://api.github.com/user/${accountid}`)
+        const data = await response.json()
+        return data.login
+    } catch (error) {
+        console.error(error)
     }
-    if (!accountid) return
-    const response = await fetch(`https://api.github.com/user/${accountid}`)
-    const data = await response.json()
-    return data.login
 }
 
-export const CreateWebhookByApi = async (
+export async function CreateWebhookByApi(
     session: Session,
     repo_name: string,
     owner: string
-) => {
+) {
     const url = `https://api.github.com/repos/${owner}/${repo_name}/hooks`
     const data = {
         name: "web",
@@ -63,62 +67,75 @@ export const CreateWebhookByApi = async (
     }
 }
 
-export const InsertWebhook = async (webhook: Webhook) => {
-    let result = await prisma.webhook.create({
-        data: {
-            repo_name: webhook.repo_name,
-            owner: webhook.owner,
-            belongs: webhook.belongs,
-        },
-    })
-    if (!result) console.log("insert webhook result is null")
-    let res = await prisma.projects.update({
-        where: {
-            id: webhook.belongs,
-        },
-        data: {
-            linked: webhook.repo_name,
-        },
-    })
-    if (!res) console.log("can't update project ")
-    return result
+export async function InsertWebhook(webhook: Webhook) {
+    try {
+        let result = await prisma.webhook.create({
+            data: {
+                repo_name: webhook.repo_name,
+                owner: webhook.owner,
+                belongs: webhook.belongs,
+            },
+        })
+        if (!result) console.log("insert webhook result is null")
+        let res = await prisma.projects.update({
+            where: {
+                id: webhook.belongs,
+            },
+            data: {
+                linked: webhook.repo_name,
+            },
+        })
+        if (!res) console.log("can't update project ")
+        return result
+    } catch (error) {
+        console.error(error)
+    }
 }
 
-// export const DeleteLinkedRepo = async (projectid: string) => {
+// export async function DeleteLinkedRepo(projectid: string) {
 //     const result = await prisma.webhook.delete({
 //     return result
 // }
 
-export const InsertWebhookCommit = async (pushed: webhookCommit) => {
-    const result = await prisma.webhookCommit.create({
-        data: {
-            timestamp: pushed.timestamp,
-            after_sha: pushed.after_sha,
-            belongs: pushed.belongs,
-            comment: pushed.comment,
-        },
-    })
-    return result
-}
-export const SelectWebhook = async (owner: string, repo_name: string) => {
-    const result = await prisma.webhook.findFirst({
-        where: {
-            owner: owner,
-            repo_name: repo_name,
-        },
-    })
-
-    if (!result) return null
-
-    const tmp = {
-        id: result.id,
-        belongs: result.belongs,
+export async function InsertWebhookCommit(pushed: webhookCommit) {
+    try {
+        const result = await prisma.webhookCommit.create({
+            data: {
+                timestamp: pushed.timestamp,
+                after_sha: pushed.after_sha,
+                belongs: pushed.belongs,
+                comment: pushed.comment,
+            },
+        })
+        return result
+    } catch (error) {
+        console.error(error)
     }
-
-    return tmp
 }
 
-export const getUncheckedCommit = async (webhookid: string) => {
+export async function SelectWebhook(owner: string, repo_name: string) {
+    try {
+        const result = await prisma.webhook.findFirst({
+            where: {
+                owner: owner,
+                repo_name: repo_name,
+            },
+        })
+
+        if (!result) return null
+
+        const tmp = {
+            id: result.id,
+            belongs: result.belongs,
+        }
+
+        return tmp
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export async function getUncheckedCommit(webhookid: string) {
     const result = await prisma.webhookCommit.findMany({
         where: {
             belongs: webhookid,

@@ -80,7 +80,6 @@ export default async function handler(
     console.log(filteredPrompt)
     console.log("#####################\n")
     const relatedtasks = await SelectTasks(targetwebhook.belongs)
-    console.log(relatedtasks)
 
     return
 }
