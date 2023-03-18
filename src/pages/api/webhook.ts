@@ -6,6 +6,7 @@ import {
     GetWebhookId,
     getUncheckedCommit,
 } from "../../lib/webhook"
+import { PromptComponent } from "../../types/gptapi"
 
 export default async function handler(
     req: NextApiRequest,
@@ -41,11 +42,25 @@ export default async function handler(
     console.log(uncheckedCommit)
     // const message = parsedPayload.head_commit?.message
     // const timestamp = parsedPayload.head_commit?.timestamp
-    const commitcontent = await getCommitFiles(owner, repo_name, after_sha)
-        .then((files) => files)
-        .catch((err) => console.log(err))
+    // Process each commit and fetch the associated files
+    const promptcomponent: PromptComponent[] = await Promise.all(
+        uncheckedCommit.map((commit) =>
+            getCommitFiles(owner, repo_name, commit.after_sha)
+                .then((files) =>
+                    files.map((file) => ({
+                        timestamp: commit.timestamp,
+                        filename: file.filename,
+                        contents: file.contents,
+                    }))
+                )
+                .catch((err) => {
+                    console.log(err)
+                    return []
+                })
+        )
+    ).then((components) => components.flat())
 
-    console.log(commitcontent[0])
+    console.log(promptcomponent)
 
     return
 }
