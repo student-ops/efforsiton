@@ -30,7 +30,6 @@ export async function ReqestGpt(question: string, uuid: string) {
         var answer = ""
         if (completion.data.choices[0].text != undefined) {
             answer = completion.data.choices[0].text.replace(/^\s+/, "")
-            console.log(answer)
             return answer
         } else {
             return answer
@@ -81,6 +80,7 @@ export function CreatePrompt(
         .join(",\n  ")
     let promptMessage = `Commnad:
 Guess the completed task from the updated content of the code. Answer the task name only in the following format:\n
+########
 [
     {"name": "taskA", "completed": true},
     {"name": "taskB", "completed": false}
