@@ -123,6 +123,7 @@ export const getUncheckedCommit = async (webhookid: string) => {
             id: commit.id,
             timestamp: commit.timestamp,
             after_sha: commit.after_sha,
+            comment: commit.comment,
         }
     })
     return uncheckedcontent
