@@ -76,11 +76,9 @@ export default async function handler(
     const filteredPrompt = promptcomponent.filter(
         (component) => component.contents.length > 1000
     )
-    console.log(
-        "filted prompt\n #############################\n" +
-            filteredPrompt +
-            "\n #############################\n"
-    )
+    console.log("#####################\n")
+    console.log(filteredPrompt)
+    console.log("#####################\n")
     const relatedtasks = await SelectTasks(targetwebhook.belongs)
     console.log(relatedtasks)
 
