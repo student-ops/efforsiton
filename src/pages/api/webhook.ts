@@ -1,7 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getCommitFiles } from "../../lib/gptapi"
 import { webhookCommit } from "../../types/webhook"
-import { InsertWebhookCommit, GetWebhookId } from "../../lib/webhook"
+import {
+    InsertWebhookCommit,
+    GetWebhookId,
+    getUncheckedCommit,
+} from "../../lib/webhook"
 
 export default async function handler(
     req: NextApiRequest,
@@ -26,14 +30,22 @@ export default async function handler(
         after_sha: after_sha,
         belongs: webhookid,
     }
-    InsertWebhookCommit(webhookcommit)
+    await res.status(200).end()
+    const result = await InsertWebhookCommit(webhookcommit)
+    let uncheckedCommit = await getUncheckedCommit(webhookid)
+    uncheckedCommit.push({
+        id: result.id,
+        timestamp: webhookcommit.timestamp,
+        after_sha: webhookcommit.after_sha,
+    })
+    console.log(uncheckedCommit)
     // const message = parsedPayload.head_commit?.message
     // const timestamp = parsedPayload.head_commit?.timestamp
-    const files = await getCommitFiles(owner, repo_name, after_sha)
+    const commitcontent = await getCommitFiles(owner, repo_name, after_sha)
         .then((files) => files)
         .catch((err) => console.log(err))
 
-    await res.status(200).end()
-    console.log(files)
+    console.log(commitcontent)
+
     return
 }

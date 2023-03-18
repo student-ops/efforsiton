@@ -9,3 +9,9 @@ export interface webhookCommit {
     after_sha: string
     belongs: string
 }
+
+export interface WebhookCommitMinimal {
+    id: string
+    timestamp: string
+    after_sha: string
+}

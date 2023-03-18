@@ -1,6 +1,6 @@
 import { WebhookCommit } from "@prisma/client"
 import { Session } from "next-auth"
-import { Webhook, webhookCommit } from "../types/webhook"
+import { Webhook, webhookCommit, WebhookCommitMinimal } from "../types/webhook"
 import prisma from "./prisma"
 
 const urltmp = "https://fcc3-133-106-51-131.jp.ngrok.io"
@@ -108,4 +108,21 @@ export const GetWebhookId = async (owner: string, repo_name: string) => {
         },
     })
     return result?.id
+}
+
+export const getUncheckedCommit = async (webhookid: string) => {
+    const result = await prisma.webhookCommit.findMany({
+        where: {
+            belongs: webhookid,
+            checked: false,
+        },
+    })
+    const uncheckedcontent: WebhookCommitMinimal[] = result.map((commit) => {
+        return {
+            id: commit.id,
+            timestamp: commit.timestamp,
+            after_sha: commit.after_sha,
+        }
+    })
+    return uncheckedcontent
 }
