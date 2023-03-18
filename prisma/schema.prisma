@@ -84,14 +84,14 @@ model Sugestions {
 
 model Webhook {
   id            String          @id @default(cuid())
-  repoName      String
+  repo_name     String
   owner         String
   belongs       String
   belongsTo     Projects        @relation(fields: [belongs], references: [id], onDelete: Cascade)
-  webhookpushed Webhookpushed[]
+  webhookpushed WebhookCommit[]
 }
 
-model Webhookpushed {
+model WebhookCommit {
   id        String  @id @default(cuid())
   timestamp String
   after_sha String

@@ -3,3 +3,9 @@ export interface Webhook {
     owner: string
     belongs: string
 }
+
+export interface webhookCommit {
+    timestamp: string
+    after_sha: string
+    belongs: string
+}

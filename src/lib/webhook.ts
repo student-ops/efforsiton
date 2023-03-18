@@ -1,8 +1,9 @@
+import { WebhookCommit } from "@prisma/client"
 import { Session } from "next-auth"
-import { Webhook } from "../types/webhook"
+import { Webhook, webhookCommit } from "../types/webhook"
 import prisma from "./prisma"
 
-const urltmp = "https://0c10-133-106-196-93.jp.ngrok.io"
+const urltmp = "https://fcc3-133-106-51-131.jp.ngrok.io"
 
 export async function FetchGithubUser(session_username: string) {
     const fetched = await prisma.user
@@ -65,7 +66,7 @@ export async function CreateWebhookByApi(
 export const InsertWebhook = async (webhook: Webhook) => {
     let result = await prisma.webhook.create({
         data: {
-            repoName: webhook.repo_name,
+            repo_name: webhook.repo_name,
             owner: webhook.owner,
             belongs: webhook.belongs,
         },
@@ -87,3 +88,24 @@ export const InsertWebhook = async (webhook: Webhook) => {
 //     const result = await prisma.webhook.delete({
 //     return result
 // }
+
+export const InsertWebhookCommit = async (pushed: webhookCommit) => {
+    const result = await prisma.webhookCommit.create({
+        data: {
+            timestamp: pushed.timestamp,
+            after_sha: pushed.after_sha,
+            belongs: pushed.belongs,
+        },
+    })
+    return result
+}
+
+export const GetWebhookId = async (owner: string, repo_name: string) => {
+    const result = await prisma.webhook.findFirst({
+        where: {
+            owner: owner,
+            repo_name: repo_name,
+        },
+    })
+    return result?.id
+}
