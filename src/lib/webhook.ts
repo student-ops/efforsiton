@@ -1,11 +1,10 @@
-import { WebhookCommit } from "@prisma/client"
 import { Session } from "next-auth"
 import { Webhook, webhookCommit, WebhookCommitMinimal } from "../types/webhook"
 import prisma from "./prisma"
 
 const urltmp = "https://fcc3-133-106-51-131.jp.ngrok.io"
 
-export async function FetchGithubUser(session_username: string) {
+export const FetchGithubUser = async (session_username: string) => {
     const fetched = await prisma.user
         .findUnique({
             where: {
@@ -29,11 +28,12 @@ export async function FetchGithubUser(session_username: string) {
     const data = await response.json()
     return data.login
 }
-export async function CreateWebhookByApi(
+
+export const CreateWebhookByApi = async (
     session: Session,
     repo_name: string,
     owner: string
-) {
+) => {
     const url = `https://api.github.com/repos/${owner}/${repo_name}/hooks`
     const data = {
         name: "web",
@@ -100,15 +100,22 @@ export const InsertWebhookCommit = async (pushed: webhookCommit) => {
     })
     return result
 }
-
-export const GetWebhookId = async (owner: string, repo_name: string) => {
+export const SelectWebhook = async (owner: string, repo_name: string) => {
     const result = await prisma.webhook.findFirst({
         where: {
             owner: owner,
             repo_name: repo_name,
         },
     })
-    return result?.id
+
+    if (!result) return null
+
+    const tmp = {
+        id: result.id,
+        belongs: result.belongs,
+    }
+
+    return tmp
 }
 
 export const getUncheckedCommit = async (webhookid: string) => {

@@ -3,16 +3,18 @@ import { getCommitFiles } from "../../lib/gptapi"
 import { webhookCommit } from "../../types/webhook"
 import {
     InsertWebhookCommit,
-    GetWebhookId,
+    SelectWebhook,
     getUncheckedCommit,
 } from "../../lib/webhook"
 import { PromptComponent } from "../../types/gptapi"
+import { SelectTasks } from "../../lib/task"
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const payload = req.body
+    //github webhook push event からのリクエストを受け取り必要な値を取り出す
     if (!payload) {
         res.status(200).end()
     }
@@ -24,17 +26,26 @@ export default async function handler(
     const repo_name = parsedPayload.repository?.name
     const after_sha = parsedPayload.after
 
-    const webhookid = await GetWebhookId(owner, repo_name)
-    if (!webhookid) return res.status(401).end("webhook not found")
+    type webhookindentifier = {
+        id: string
+        belongs: string
+    }
+    const targetwebhook = await SelectWebhook(owner, repo_name)
+    // error handling
+    if (!targetwebhook) {
+        await res.status(200).send(null)
+        console.log("webhookid is null")
+        return
+    }
     const webhookcommit: webhookCommit = {
         timestamp: parsedPayload.head_commit?.timestamp,
         comment: parsedPayload.head_commit?.message,
         after_sha: after_sha,
-        belongs: webhookid,
+        belongs: targetwebhook.id,
     }
     await res.status(200).end()
     const result = await InsertWebhookCommit(webhookcommit)
-    let uncheckedCommit = await getUncheckedCommit(webhookid)
+    let uncheckedCommit = await getUncheckedCommit(targetwebhook.id)
     uncheckedCommit.push({
         id: result.id,
         timestamp: webhookcommit.timestamp,
@@ -65,7 +76,13 @@ export default async function handler(
     const filteredPrompt = promptcomponent.filter(
         (component) => component.contents.length > 1000
     )
-    console.log(filteredPrompt)
+    console.log(
+        "filted prompt\n #############################\n" +
+            filteredPrompt +
+            "\n #############################\n"
+    )
+    const relatedtasks = await SelectTasks(targetwebhook.belongs)
+    console.log(relatedtasks)
 
     return
 }
