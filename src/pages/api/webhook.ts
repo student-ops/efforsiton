@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { getCommitFiles } from "../../lib/gptapi"
+import { CreatePrompt, getCommitFiles } from "../../lib/gptapi"
 import { webhookCommit } from "../../types/webhook"
 import {
     InsertWebhookCommit,
     SelectWebhook,
     getUncheckedCommit,
 } from "../../lib/webhook"
-import { PromptComponent } from "../../types/gptapi"
-import { SelectTasks } from "../../lib/task"
+import { PromptComponent, TaskforPrompt } from "../../types/gptapi"
+import { SelectUnachievedTask } from "../../lib/task"
 
 export default async function handler(
     req: NextApiRequest,
@@ -33,7 +33,6 @@ export default async function handler(
     const targetwebhook = await SelectWebhook(owner, repo_name)
     // error handling
     if (!targetwebhook) {
-        await res.status(200).send(null)
         console.log("webhookid is null")
         return
     }
@@ -45,6 +44,7 @@ export default async function handler(
     }
     await res.status(200).end()
     const result = await InsertWebhookCommit(webhookcommit)
+    if (!result) return console.log("insert webhookCommit result is null")
     let uncheckedCommit = await getUncheckedCommit(targetwebhook.id)
     uncheckedCommit.push({
         id: result.id,
@@ -79,7 +79,19 @@ export default async function handler(
     console.log("#####################\n")
     console.log(filteredPrompt)
     console.log("#####################\n")
-    const relatedtasks = await SelectTasks(targetwebhook.belongs)
+    const relatedtasks = await SelectUnachievedTask(targetwebhook.belongs)
+    if (relatedtasks.length === 0) return console.log("relatedtasks is null")
+    const tasksforprompt: TaskforPrompt[] = relatedtasks.map((task) => {
+        return {
+            name: task.name,
+            description: task.description,
+        }
+    })
+    const myPrompts: string[] = []
+    filteredPrompt.map((prompt) => {
+        myPrompts.push(CreatePrompt(prompt, tasksforprompt))
+    })
+    console.log(myPrompts[0])
 
     return
 }

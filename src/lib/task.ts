@@ -10,6 +10,16 @@ export async function SelectTasks(projectId: string) {
     return tasks
 }
 
+export async function SelectUnachievedTask(projectId: string) {
+    const tasks = await prisma.tasks.findMany({
+        where: {
+            belongs: projectId,
+            acheived: false,
+        },
+    })
+    return tasks
+}
+
 export async function InsertTask(task: TaskForInsert) {
     const res = await prisma.tasks.create({
         data: {

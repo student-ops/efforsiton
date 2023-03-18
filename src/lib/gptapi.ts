@@ -1,4 +1,5 @@
 import axios from "axios"
+import { PromptComponent, TaskforPrompt } from "../types/gptapi"
 interface File {
     filename: string
     contentsUrl: string
@@ -36,4 +37,29 @@ export async function getCommitFiles(
     )
 
     return fileContents
+}
+
+export function CreatePrompt(
+    component: PromptComponent,
+    tasks: TaskforPrompt[]
+) {
+    let tasksString = tasks
+        .map((task) => `"${task.name}": "${task.description}"`)
+        .join(",\n  ")
+    let promptMessage = `Guess the completed task from the updated content of the code. Answer the task name only in the following format:\n
+  #################
+    {
+      filename:"${component.filename}"
+      timestamp:"${component.timestamp}"
+      commit comment:"${component.comment}"
+      content "{
+        ${component.contents}
+      }"
+    },
+  ###############
+  tasks[
+    ${tasksString}
+  ]
+  `
+    return promptMessage
 }

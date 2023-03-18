@@ -1,14 +1,19 @@
 Guess the completed task from the updated content of the code. Answer the task name only in the form 
-completed["taskname1", "taskname2"].
+
+#################
+  {
+    filename:"filename"
+    timestamp:"timestamp"
+    commit commnet:"commet"
+    content "{
+      contest
+      ...
+      code 
+      ...
+    }"
+  },
 ###############
 task[
   {"taskname":"description"},
-]
-#################
-
-code [
-  "file"{
-    {"date":"date"}
-    {"code":"code updated"}
-  },
+  ...
 ]
