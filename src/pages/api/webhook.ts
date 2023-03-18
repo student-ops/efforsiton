@@ -62,7 +62,10 @@ export default async function handler(
         )
     ).then((components) => components.flat())
 
-    console.log(promptcomponent)
+    const filteredPrompt = promptcomponent.filter(
+        (component) => component.contents.length > 1000
+    )
+    console.log(filteredPrompt)
 
     return
 }
