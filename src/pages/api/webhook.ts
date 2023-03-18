@@ -51,8 +51,8 @@ export default async function handler(
                     files.map((file) => ({
                         timestamp: commit.timestamp,
                         filename: file.filename,
-                        contents: file.contents,
                         comment: commit.comment,
+                        contents: file.contents,
                     }))
                 )
                 .catch((err) => {
