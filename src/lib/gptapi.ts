@@ -1,5 +1,8 @@
 import axios from "axios"
 import { PromptComponent, TaskforPrompt } from "../types/gptapi"
+import { Configuration, OpenAIApi } from "openai"
+import dotenv from "dotenv"
+
 interface File {
     filename: string
     contentsUrl: string
@@ -10,6 +13,36 @@ interface FileContent {
     contents: string
 }
 
+dotenv.config()
+
+const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+})
+
+export async function ReqestGpt(question: string, uuid: string) {
+    const openai = new OpenAIApi(configuration)
+    try {
+        const completion = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: question,
+            max_tokens: 1000,
+            temperature: 0.6,
+            best_of: 4,
+            user: uuid,
+        })
+        var answer = ""
+        if (completion.data.choices[0].text != undefined) {
+            answer = completion.data.choices[0].text.replace(/^\s+/, "")
+            console.log(answer)
+            return answer
+        } else {
+            return answer
+        }
+    } catch (err) {
+        console.log(err)
+        return "erorr"
+    }
+}
 // get code form github by commit sha and others
 export async function getCommitFiles(
     owner: string,
@@ -49,7 +82,7 @@ export function CreatePrompt(
                 `{"name" : ${task.name} ,"description :"${task.description}"}`
         )
         .join(",\n  ")
-    let promptMessage = `commnad:
+    let promptMessage = `Commnad:
 Guess the completed task from the updated content of the code. Answer the task name only in the following format:\n
 [
     {"name": "taskA", "completed": true},
@@ -68,7 +101,7 @@ update data:
 },
 ###############
 
-task arraya:
+task array:
 
 tasks[
     ${tasksString}

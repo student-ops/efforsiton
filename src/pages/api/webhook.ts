@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { CreatePrompt, getCommitFiles } from "../../lib/gptapi"
+import { CreatePrompt, getCommitFiles, ReqestGpt } from "../../lib/gptapi"
 import { webhookCommit } from "../../types/webhook"
 import {
     InsertWebhookCommit,
@@ -91,7 +91,9 @@ export default async function handler(
     filteredPrompt.map((prompt) => {
         myPrompts.push(CreatePrompt(prompt, tasksforprompt))
     })
-    console.log(myPrompts[0])
+    // console.log(myPrompts[0])
+    const answer = await ReqestGpt(myPrompts[0], targetwebhook.belongs)
+    console.log(answer)
 
     return
 }
