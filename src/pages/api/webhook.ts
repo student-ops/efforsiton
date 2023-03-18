@@ -92,9 +92,11 @@ export default async function handler(
     filteredPrompt.map((prompt) => {
         myPrompts.push(CreatePrompt(prompt, tasksforprompt))
     })
-    console.log(myPrompts[0])
-    const answer = await ReqestGpt(myPrompts[0], targetwebhook.belongs)
-    console.log(answer)
-
+    let answers: string[] = []
+    for (const prompt of myPrompts) {
+        const answer = await ReqestGpt(prompt, targetwebhook.belongs)
+        answers.push(answer)
+    }
+    console.log(answers)
     return
 }

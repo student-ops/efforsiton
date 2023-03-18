@@ -75,7 +75,7 @@ export function CreatePrompt(
     let tasksString = tasks
         .map(
             (task) =>
-                `{name : ${task.name} ,description :"${task.description}", "id" : ${task.id}}`
+                `{name : ${task.name} ,description :"${task.description}", id : ${task.id}}`
         )
         .join(",\n  ")
     let promptMessage = `Commnad:
