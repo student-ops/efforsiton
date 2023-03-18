@@ -96,6 +96,7 @@ export default async function handler(
     for (const prompt of myPrompts) {
         const answer = await ReqestGpt(prompt, targetwebhook.belongs)
         answers.push(answer)
+        console.log(answer)
     }
     console.log(answers)
     return

@@ -24,7 +24,7 @@ export async function ReqestGpt(question: string, uuid: string) {
             prompt: question,
             max_tokens: 1000,
             temperature: 0.6,
-            best_of: 4,
+            best_of: 2,
             user: uuid,
         })
         var answer = ""
