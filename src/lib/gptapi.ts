@@ -75,7 +75,7 @@ export function CreatePrompt(
     let tasksString = tasks
         .map(
             (task) =>
-                `{"name" : ${task.name} ,"description :"${task.description}"}`
+                `{name : ${task.name} ,description :"${task.description}", "id" : ${task.id}}`
         )
         .join(",\n  ")
     let promptMessage = `Commnad:
@@ -83,10 +83,8 @@ Guess the completed task from the updated content of the code.
 Answer only in the following format:\n
 
 [
-    {"name": "taskA", "completed": true},
-    {"name": "taskB", "completed": false}
+    {task_id :string , acheived : boolean},
 ]
-
 
 #################
 
@@ -101,7 +99,7 @@ update data:
 },
 ###############
 
-task array:
+unacheived task array:
 
 tasks[
     ${tasksString}

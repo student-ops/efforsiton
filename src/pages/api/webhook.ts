@@ -83,6 +83,7 @@ export default async function handler(
     if (relatedtasks.length === 0) return console.log("relatedtasks is null")
     const tasksforprompt: TaskforPrompt[] = relatedtasks.map((task) => {
         return {
+            id: task.id,
             name: task.name,
             description: task.description,
         }
@@ -91,7 +92,7 @@ export default async function handler(
     filteredPrompt.map((prompt) => {
         myPrompts.push(CreatePrompt(prompt, tasksforprompt))
     })
-    // console.log(myPrompts[0])
+    console.log(myPrompts[0])
     const answer = await ReqestGpt(myPrompts[0], targetwebhook.belongs)
     console.log(answer)
 

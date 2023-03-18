@@ -6,6 +6,7 @@ export interface PromptComponent {
 }
 
 export interface TaskforPrompt {
+    id: string
     name: string
     description: string | null
 }
