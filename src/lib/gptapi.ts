@@ -44,10 +44,20 @@ export function CreatePrompt(
     tasks: TaskforPrompt[]
 ) {
     let tasksString = tasks
-        .map((task) => `{${task.name}: "${task.description}"}`)
+        .map(
+            (task) =>
+                `{"name" : ${task.name} ,"description :"${task.description}"}`
+        )
         .join(",\n  ")
-    let promptMessage = `Guess the completed task from the updated content of the code. Answer the task name only in the following format:\n
+    let promptMessage = `commnad:
+Guess the completed task from the updated content of the code. Answer the task name only in the following format:\n
+[
+    {"name": "taskA", "completed": true},
+    {"name": "taskB", "completed": false}
+]
 #################
+
+update data:
 {
     filename:"${component.filename}"
     timestamp:"${component.timestamp}"
@@ -57,8 +67,11 @@ export function CreatePrompt(
     }"
 },
 ###############
+
+task arraya:
+
 tasks[
-${tasksString}
+    ${tasksString}
 ]
 `
     return promptMessage
