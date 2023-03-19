@@ -2,7 +2,7 @@ import { Session } from "next-auth"
 import { Webhook, webhookCommit, WebhookCommitMinimal } from "../types/webhook"
 import prisma from "./prisma"
 
-const urltmp = "https://fcc3-133-106-51-131.jp.ngrok.io"
+const urltmp = process.env.WEBHOOK_URL
 
 export async function FetchGithubUser(session_username: string) {
     try {

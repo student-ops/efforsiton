@@ -25,11 +25,9 @@ export default async function handler(
     const owner = parsedPayload.repository?.owner?.name
     const repo_name = parsedPayload.repository?.name
     const after_sha = parsedPayload.after
+    const added = parsedPayload.head_commit?.added as string[]
+    console.log("added: ", added)
 
-    type webhookindentifier = {
-        id: string
-        belongs: string
-    }
     const targetwebhook = await SelectWebhook(owner, repo_name)
     // error handling
     if (!targetwebhook) {
@@ -42,6 +40,7 @@ export default async function handler(
         after_sha: after_sha,
         belongs: targetwebhook.id,
     }
+
     await res.status(200).end()
     const result = await InsertWebhookCommit(webhookcommit)
     if (!result) return console.log("insert webhookCommit result is null")
@@ -72,13 +71,11 @@ export default async function handler(
                 })
         )
     ).then((components) => components.flat())
+    console.log("promptcomponent: ", promptcomponent[0])
 
     const filteredPrompt = promptcomponent.filter(
         (component) => component.contents.length > 1000
     )
-    // console.log("#####################\n")
-    // console.log(filteredPrompt)
-    // console.log("#####################\n")
     const relatedtasks = await SelectUnachievedTask(targetwebhook.belongs)
     if (relatedtasks.length === 0) return console.log("relatedtasks is null")
     const tasksforprompt: TaskforPrompt[] = relatedtasks.map((task) => {
@@ -92,12 +89,14 @@ export default async function handler(
     filteredPrompt.map((prompt) => {
         myPrompts.push(CreatePrompt(prompt, tasksforprompt))
     })
-    let answers: string[] = []
-    for (const prompt of myPrompts) {
-        const answer = await ReqestGpt(prompt, targetwebhook.belongs)
-        answers.push(answer)
-        console.log(answer)
-    }
-    console.log(answers)
+    // let answers: string[] = []
+    // for (const prompt of myPrompts) {
+    //     const answer = await ReqestGpt(prompt, targetwebhook.belongs)
+    //     answers.push(answer)
+    //     console.log(answer)
+    // }
+
+    // const answers = await ReqestGpt(myPrompts[0], targetwebhook.belongs)
+    // console.log(answers)
     return
 }

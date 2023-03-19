@@ -91,7 +91,6 @@ Answer only in the following format:\n
 update data:
 {
     filename:"${component.filename}"
-    timestamp:"${component.timestamp}"
     commit comment:"${component.comment}"
     content "{
     ${component.contents}
