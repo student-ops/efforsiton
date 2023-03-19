@@ -2,8 +2,6 @@ import { Session } from "next-auth"
 import { Webhook, webhookCommit, WebhookCommitMinimal } from "../types/webhook"
 import prisma from "./prisma"
 
-const urltmp = process.env.WEBHOOK_URL
-
 export async function FetchGithubUser(session_username: string) {
     try {
         const fetched = await prisma.user
@@ -38,6 +36,8 @@ export async function CreateWebhookByApi(
     repo_name: string,
     owner: string
 ) {
+    const urltmp = process.env.WEBHOOK_URL
+    console.log(urltmp)
     const url = `https://api.github.com/repos/${owner}/${repo_name}/hooks`
     const data = {
         name: "web",
