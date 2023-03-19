@@ -43,6 +43,7 @@ export default async function handler(
             belongs: projectid,
         }
         result = await InsertWebhook(tmpwebhook)
+        return res.status(200).send("ok")
     }
     // if (req.method === "DELETE") {
     //     console.log("delete")
