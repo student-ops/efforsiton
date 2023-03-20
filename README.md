@@ -20,9 +20,17 @@ webhook からのリクエストで以下のような json が生成されこれ
 
 by /src/pages/api/webhook.ts
 
-```prompt_componet.json
-[
+<details>
+    <summary>Toggle Switch</summary>
+    Foldable Content[enter image description here][1]
+</details>
+<details>
+<summary>
   配列の要素オブジェクトがファイルごとに生成される
+</summary>
+```
+prompt_componet.json
+[
  {
     timestamp: '2023-03-19T01:43:52+09:00',
     filename: 'src/pages/api/webhook.ts',
@@ -101,6 +109,7 @@ by /src/pages/api/webhook.ts
   }
 ]
 ```
+</details>
 
 ## want to modefy
 

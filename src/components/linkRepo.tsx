@@ -166,10 +166,14 @@ const LinkRepo: React.FC<Props> = ({ session, project }) => {
             <>
                 <p className="text-lg">
                     linked to{" "}
-                    <a className="text-blue-500 underline" href={linkedRepo}>
+                    <a
+                        className="text-blue-500 underline mr-6 ml-2"
+                        href={linkedRepo}>
                         {reponame}
                     </a>
-                    <button onClick={DeleteLinkedRepo}>detatch</button>
+                    <button onClick={DeleteLinkedRepo} className={cancelButton}>
+                        detatch
+                    </button>
                 </p>
             </>
         )
