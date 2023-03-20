@@ -2,27 +2,39 @@ import { Project, Task } from "../../types/project"
 import { GetServerSideProps } from "next"
 import { CustomNextPage } from "../../types/custom-next-page"
 import { FetchProjectFromId } from "../../lib/project"
-import { useSession } from "next-auth/react"
 import TaskInputField from "../../components/taskinputfield"
 import TaskViwer from "../../components/tasksViwer"
 import { useEffect, useState, createContext, useContext } from "react"
 import LinkRepo from "../../components/linkRepo"
+import { Session } from "next-auth"
 
 type Props = {
-    Project: Project
+    project: Project
+    session: Session
 }
-
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const Project = await FetchProjectFromId(params!.id as string)
-    if (!Project) {
-    }
-    return {
-        props: {
-            Project,
-        },
+    try {
+        const projectId = params!.id as string
+        const project = await FetchProjectFromId(projectId)
+
+        if (!project) {
+            return {
+                notFound: true,
+            }
+        }
+
+        return {
+            props: {
+                project,
+            },
+        }
+    } catch (error) {
+        console.error("Error fetching project:", error)
+        return {
+            notFound: true,
+        }
     }
 }
-
 interface SelectorContextValue {
     selectedTasksId: string[]
     setId: (value: string[]) => void
@@ -62,9 +74,7 @@ const achieveTask = async (taskId: string) => {
     }
 }
 
-const Projectpage: CustomNextPage<Props> = (props) => {
-    const project = props.Project
-    const { data: session } = useSession()
+const Projectpage: CustomNextPage<Props> = ({ project, session }) => {
     const userName = session?.user?.name
     const [tasks, setTasks] = useState<Task[]>()
     const [dummytask, setdummytask] = useState<Task>()

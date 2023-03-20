@@ -1,4 +1,4 @@
-import Head from "../components/head"
+import Head from "./head"
 
 // import { useSession } from "next-auth/react"
 

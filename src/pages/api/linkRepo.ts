@@ -9,7 +9,6 @@ import {
     deleteWebhookFromGithubRepo,
 } from "../../lib/webhook"
 import prisma from "../../lib/prisma"
-import { Webhook } from "../../types/webhook"
 
 export default async function handler(
     req: NextApiRequest,
@@ -45,8 +44,10 @@ export default async function handler(
             res.status(401).send("can't create webhook\n")
             return
         }
+        const webhookid: string = `${gihubresult.id}`
+
         const tmpwebhook = {
-            id: gihubresult.id,
+            id: webhookid,
             repo_name: repo_name,
             owner: owner,
             belongs: projectid,
@@ -93,6 +94,7 @@ export default async function handler(
         if (!resu) {
             res.status(200).send("resu == null")
         }
+        res.status(200).send(null)
     }
 
     // queryparams
