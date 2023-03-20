@@ -21,10 +21,6 @@ webhook からのリクエストで以下のような json が生成されこれ
 by /src/pages/api/webhook.ts
 
 <details>
-    <summary>Toggle Switch</summary>
-    Foldable Content[enter image description here][1]
-</details>
-<details>
 <summary>
   配列の要素オブジェクトがファイルごとに生成される
 </summary>
