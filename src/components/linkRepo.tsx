@@ -121,6 +121,7 @@ const LinkRepo: React.FC<Props> = ({ session, project }) => {
             method: "DELETE",
         })
         setLinkedRepo("")
+
         return null
     }
 

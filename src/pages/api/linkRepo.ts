@@ -2,10 +2,13 @@ import { NextApiHandler } from "next"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "next-auth/react"
 import {
-    CreateWebhookByApi,
+    CreateWebhookByGithubapi,
     FetchGithubUser,
     InsertWebhook,
+    DeleteLinkedRepo,
+    deleteWebhookFromGithubRepo,
 } from "../../lib/webhook"
+import prisma from "../../lib/prisma"
 import { Webhook } from "../../types/webhook"
 
 export default async function handler(
@@ -32,34 +35,65 @@ export default async function handler(
             res.status(401).send("can't fetch owner\n")
             return
         }
-        let result = await CreateWebhookByApi(session, repo_name, owner)
-        if (!result) {
+
+        const gihubresult = await CreateWebhookByGithubapi(
+            session,
+            repo_name,
+            owner
+        )
+        if (!gihubresult) {
             res.status(401).send("can't create webhook\n")
             return
         }
         const tmpwebhook = {
+            id: gihubresult.id,
             repo_name: repo_name,
             owner: owner,
             belongs: projectid,
         }
-        result = await InsertWebhook(tmpwebhook)
+        const result = await InsertWebhook(tmpwebhook)
+        if (!result) {
+            res.status(401).send("can't create webhook\n")
+            return
+        }
         return res.status(200).send("ok")
     }
-    // if (req.method === "DELETE") {
-    //     console.log("delete")
-    //     if (!projectid) {
-    //         res.status(400).send("project id or repo is null\n")
-    //         return
-    //     }
-    //     // github apiも追加する
-    //     const resu = await DeleteLinkedRepo(projectid)
-    //     if (!resu) {
-    //         res.status(200).send("resu == null")
-    //     } else {
-    //         console.log("ok")
-    //         res.status(200).send("ok")
-    //     }
-    // }
+    if (req.method === "DELETE") {
+        if (!projectid) {
+            res.status(400).send("project id or repo is null\n")
+            return
+        }
+        // github apiも追加する
+        const project = await prisma.projects.update({
+            where: {
+                id: projectid,
+            },
+            data: {
+                linked: null,
+            },
+        })
+        console.log(project)
+        const fetched = await prisma.webhook.findUnique({
+            where: {
+                belongs: projectid,
+            },
+        })
+        if (!fetched) {
+            res.status(400).send("can't find webhook")
+            console.log("can't find webhook")
+            return
+        }
+        const resu = await DeleteLinkedRepo(projectid)
+        await deleteWebhookFromGithubRepo(
+            session.user.accessToken!,
+            fetched?.owner,
+            fetched?.repo_name,
+            fetched?.id
+        )
+        if (!resu) {
+            res.status(200).send("resu == null")
+        }
+    }
 
     // queryparams
     // api/linkRepo?projectid={id}&repo={repo}

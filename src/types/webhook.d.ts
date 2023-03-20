@@ -1,4 +1,5 @@
 export interface Webhook {
+    id: string
     repo_name: string
     owner: string
     belongs: string

@@ -31,7 +31,7 @@ export async function FetchGithubUser(session_username: string) {
     }
 }
 
-export async function CreateWebhookByApi(
+export async function CreateWebhookByGithubapi(
     session: Session,
     repo_name: string,
     owner: string
@@ -61,16 +61,46 @@ export async function CreateWebhookByApi(
             body: JSON.stringify(data),
         })
         const json = await response.json()
+        console.log(json)
         return json
     } catch (error) {
         console.error(error)
     }
 }
 
+export async function deleteWebhookFromGithubRepo(
+    accessToken: string,
+    owner: string,
+    repo_name: string,
+    hookId: string
+): Promise<void> {
+    const url = `https://api.github.com/repos/${owner}/${repo_name}/hooks/${hookId}`
+
+    const headers = {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${accessToken}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: "DELETE",
+            headers,
+        })
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete webhook: ${response.statusText}`)
+        }
+    } catch (error) {
+        console.error(error)
+        throw new Error("Failed to delete webhook")
+    }
+}
 export async function InsertWebhook(webhook: Webhook) {
     try {
         let result = await prisma.webhook.create({
             data: {
+                id: webhook.id,
                 repo_name: webhook.repo_name,
                 owner: webhook.owner,
                 belongs: webhook.belongs,
@@ -92,10 +122,14 @@ export async function InsertWebhook(webhook: Webhook) {
     }
 }
 
-// export async function DeleteLinkedRepo(projectid: string) {
-//     const result = await prisma.webhook.delete({
-//     return result
-// }
+export async function DeleteLinkedRepo(projectid: string) {
+    const result = await prisma.webhook.delete({
+        where: {
+            belongs: projectid,
+        },
+    })
+    return result
+}
 
 export async function InsertWebhookCommit(pushed: webhookCommit) {
     try {

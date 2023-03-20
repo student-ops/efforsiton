@@ -44,6 +44,7 @@ export default async function handler(
     await res.status(200).end()
     const result = await InsertWebhookCommit(webhookcommit)
     if (!result) return console.log("insert webhookCommit result is null")
+    // false で絞っているが、切り替えが必要
     let uncheckedCommit = await getUncheckedCommit(targetwebhook.id)
     uncheckedCommit.push({
         id: result.id,

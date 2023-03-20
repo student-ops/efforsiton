@@ -86,7 +86,7 @@ model Webhook {
   id            String          @id @default(cuid())
   repo_name     String
   owner         String
-  belongs       String
+  belongs       String          @unique
   belongsTo     Projects        @relation(fields: [belongs], references: [id], onDelete: Cascade)
   webhookpushed WebhookCommit[]
 }
