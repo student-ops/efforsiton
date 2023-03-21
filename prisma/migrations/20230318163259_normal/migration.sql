@@ -48,7 +48,7 @@ CREATE TABLE "VerificationToken" (
 CREATE TABLE "Tasks" (
     "id" TEXT NOT NULL,
     "parentId" TEXT,
-    "belongsTo" TEXT NOT NULL,
+    "belongs" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "acheived" BOOLEAN NOT NULL DEFAULT false,
@@ -65,9 +65,39 @@ CREATE TABLE "Projects" (
     "description" TEXT,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "linked" TEXT DEFAULT '',
+    "linked" TEXT,
 
     CONSTRAINT "Projects_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Sugestions" (
+    "id" TEXT NOT NULL,
+    "checked" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Sugestions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Webhook" (
+    "id" TEXT NOT NULL,
+    "repo_name" TEXT NOT NULL,
+    "owner" TEXT NOT NULL,
+    "belongs" TEXT NOT NULL,
+
+    CONSTRAINT "Webhook_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "WebhookCommit" (
+    "id" TEXT NOT NULL,
+    "belongs" TEXT NOT NULL,
+    "timestamp" TEXT NOT NULL,
+    "after_sha" TEXT NOT NULL,
+    "comment" TEXT NOT NULL,
+    "checked" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "WebhookCommit_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -101,7 +131,13 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Tasks" ADD CONSTRAINT "Tasks_belongsTo_fkey" FOREIGN KEY ("belongsTo") REFERENCES "Projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Tasks" ADD CONSTRAINT "Tasks_belongs_fkey" FOREIGN KEY ("belongs") REFERENCES "Projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Projects" ADD CONSTRAINT "Projects_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Webhook" ADD CONSTRAINT "Webhook_belongs_fkey" FOREIGN KEY ("belongs") REFERENCES "Projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "WebhookCommit" ADD CONSTRAINT "WebhookCommit_belongs_fkey" FOREIGN KEY ("belongs") REFERENCES "Webhook"("id") ON DELETE CASCADE ON UPDATE CASCADE;

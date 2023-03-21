@@ -56,8 +56,8 @@ model VerificationToken {
 model Tasks {
   id          String    @id @default(cuid())
   parentId    String?
-  belongsTo   String
-  belongs     Projects  @relation(fields: [belongsTo], references: [id], onDelete: Cascade)
+  belongs     String
+  belongsTo   Projects  @relation(fields: [belongs], references: [id], onDelete: Cascade)
   name        String
   createdAt   DateTime  @default(now())
   acheived    Boolean   @default(false)
@@ -83,16 +83,20 @@ model Sugestions {
 }
 
 model Webhook {
-  id        String   @id @default(cuid())
-  url       String?
-  events    String[]
-  belongsTo String
-  belongs   Projects @relation(fields: [belongsTo], references: [id], onDelete: Cascade)
+  id            String          @id @default(cuid())
+  repo_name     String
+  owner         String
+  belongs       String          @unique
+  belongsTo     Projects        @relation(fields: [belongs], references: [id], onDelete: Cascade)
+  webhookpushed WebhookCommit[]
 }
 
-model Pushed {
-  id        String   @id @default(cuid())
-  data      String
-  createdAt DateTime @default(now())
-  checked   Boolean  @default(false)
+model WebhookCommit {
+  id        String  @id @default(cuid())
+  belongs   String
+  timestamp String
+  after_sha String
+  comment   String
+  checked   Boolean @default(false)
+  belongsTo Webhook @relation(fields: [belongs], references: [id], onDelete: Cascade)
 }

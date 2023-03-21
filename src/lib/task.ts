@@ -1,29 +1,35 @@
 import prisma from "./prisma"
 import { TaskForInsert } from "../types/project"
 
-export async function FetchTasks(projectId: string) {
+export async function SelectTasks(projectId: string) {
     const tasks = await prisma.tasks.findMany({
         where: {
-            belongsTo: projectId,
+            belongs: projectId,
+        },
+    })
+    return tasks
+}
+
+export async function SelectUnachievedTask(projectId: string) {
+    const tasks = await prisma.tasks.findMany({
+        where: {
+            belongs: projectId,
+            acheived: false,
         },
     })
     return tasks
 }
 
 export async function InsertTask(task: TaskForInsert) {
-    const res = await prisma.tasks
-        .create({
-            data: {
-                parentId: task.parentId ?? null,
-                belongsTo: task.belongsTo,
-                name: task.name,
-                description: task.description ?? null,
-                acheivedAt: null,
-            },
-        })
-        .then((ret) => {
-            return ret
-        })
+    const res = await prisma.tasks.create({
+        data: {
+            parentId: task.parentId ?? null,
+            belongs: task.belongsTo,
+            name: task.name,
+            description: task.description ?? null,
+            acheivedAt: null,
+        },
+    })
     return res
 }
 

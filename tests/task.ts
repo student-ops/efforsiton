@@ -1,11 +1,11 @@
 import { TaskForInsert } from "../src/types/project"
 import prisma from "../src/lib/prisma"
-import { FetchTasks } from "../src/lib/task"
+import { SelectTasks } from "../src/lib/task"
 export async function InsertTask(task: TaskForInsert) {
     await prisma.tasks.create({
         data: {
             parentId: task.parentId ?? null,
-            belongsTo: task.belongsTo,
+            belongs: task.belongsTo,
             name: task.name,
             description: task.description ?? null,
         },
@@ -20,6 +20,6 @@ const mytask = {
     parentId: null,
 }
 
-FetchTasks(mytask.belongsTo).then((tasks) => {
+SelectTasks(mytask.belongsTo).then((tasks) => {
     tasks.map((task) => console.log(task))
 })

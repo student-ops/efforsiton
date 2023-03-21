@@ -1,4 +1,5 @@
 import { serialize } from "v8"
+import { Webhook } from "../types/webhook"
 import prisma from "./prisma"
 
 export interface Project {
@@ -69,7 +70,6 @@ export async function FetchMyProjects(username: string) {
         description: project.description !== null ? project.description : null,
         createdAt: project.createdAt.toISOString(),
         userId: project.userId,
-        linked: project.linked,
     }))
     // console.log(serializedProjects)
     return serializedProjects
@@ -98,28 +98,4 @@ export const FetchProjectFromId = async (id: string) => {
     })
     const serializedproject = JSON.parse(JSON.stringify(project))
     return serializedproject
-}
-
-export const AddLinkedRepo = async (projectid: string, repo: string) => {
-    const project = await prisma.projects.update({
-        where: {
-            id: projectid,
-        },
-        data: {
-            linked: repo,
-        },
-    })
-    return project
-}
-
-export const DeleteLinkedRepo = async (projectid: string) => {
-    const result = await prisma.projects.update({
-        where: {
-            id: projectid,
-        },
-        data: {
-            linked: null,
-        },
-    })
-    return result
 }

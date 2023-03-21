@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "next-auth/react"
-import { InsertTask, FetchTasks } from "../../lib/task"
+import { InsertTask, SelectTasks } from "../../lib/task"
 import { TaskForInsert, Task } from "../../types/project"
 
 export default async function handler(
@@ -40,7 +40,7 @@ export default async function handler(
             return
         }
         if (req.method === "GET") {
-            var tasks = await FetchTasks(projectid.projectid! as string)
+            var tasks = await SelectTasks(projectid.projectid! as string)
             res.status(200).json({ tasks })
         }
         return

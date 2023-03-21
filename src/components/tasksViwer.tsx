@@ -1,10 +1,8 @@
-import { Task, TaskforFrontend } from "../types/project"
+import { Task } from "../types/project"
 import React from "react"
 import AcheivedTaskCard from "../components/taskcard"
 import UnAcheivedTaskCard from "../components/unAcheivedTaskcard"
-import { useEffect, useState } from "react"
 import { NextPage } from "next"
-import { useRouter } from "next/router"
 
 interface Props {
     acheivedtasks: Task[] | undefined | null

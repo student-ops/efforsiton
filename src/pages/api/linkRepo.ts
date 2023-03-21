@@ -1,11 +1,14 @@
 import { NextApiHandler } from "next"
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "next-auth/react"
-import { AddLinkedRepo, DeleteLinkedRepo } from "../../lib/project"
-import { Session } from "next-auth"
+import {
+    CreateWebhookByGithubapi,
+    FetchGithubUser,
+    InsertWebhook,
+    DeleteLinkedRepo,
+    deleteWebhookFromGithubRepo,
+} from "../../lib/webhook"
 import prisma from "../../lib/prisma"
-
-const urltmp = "https://0e4e-133-106-216-213.jp.ngrok.io/api/webhook"
 
 export default async function handler(
     req: NextApiRequest,
@@ -17,42 +20,81 @@ export default async function handler(
         return
     }
     const projectid = req.query.projectid as string
-    console.log(projectid)
     if (req.method === "POST") {
         const repo = req.query.linkTo as string
-        console.log(projectid, repo)
         if (!projectid || !repo) {
             res.status(400).send("project id or repo is null\n")
             return
         }
-
-        const resu = await AddLinkedRepo(projectid, repo)
-        if (!resu) {
-            res.status(200).send("resu == null")
-        } else {
-            res.status(200).send("ok")
-        }
         const regex = /\/([^/]+)$/i
         const match = repo.match(regex)
-        const extracted = match ? match[1] : ""
+        const repo_name = match ? match[1] : ""
+        const owner = await FetchGithubUser(session.user.name!)
+        if (!owner) {
+            res.status(401).send("can't fetch owner\n")
+            return
+        }
 
-        const result = await createWebhook(session, extracted)
-        console.log(result)
+        const gihubresult = await CreateWebhookByGithubapi(
+            session,
+            repo_name,
+            owner
+        )
+        if (!gihubresult) {
+            res.status(401).send("can't create webhook\n")
+            return
+        }
+        const webhookid: string = `${gihubresult.id}`
+
+        const tmpwebhook = {
+            id: webhookid,
+            repo_name: repo_name,
+            owner: owner,
+            belongs: projectid,
+        }
+        const result = await InsertWebhook(tmpwebhook)
+        if (!result) {
+            res.status(401).send("can't create webhook\n")
+            return
+        }
+        return res.status(200).send("ok")
     }
     if (req.method === "DELETE") {
-        console.log("delete")
         if (!projectid) {
             res.status(400).send("project id or repo is null\n")
             return
         }
         // github apiも追加する
+        const project = await prisma.projects.update({
+            where: {
+                id: projectid,
+            },
+            data: {
+                linked: null,
+            },
+        })
+        console.log(project)
+        const fetched = await prisma.webhook.findUnique({
+            where: {
+                belongs: projectid,
+            },
+        })
+        if (!fetched) {
+            res.status(400).send("can't find webhook")
+            console.log("can't find webhook")
+            return
+        }
         const resu = await DeleteLinkedRepo(projectid)
+        await deleteWebhookFromGithubRepo(
+            session.user.accessToken!,
+            fetched?.owner,
+            fetched?.repo_name,
+            fetched?.id
+        )
         if (!resu) {
             res.status(200).send("resu == null")
-        } else {
-            console.log("ok")
-            res.status(200).send("ok")
         }
+        res.status(200).send(null)
     }
 
     // queryparams
@@ -63,59 +105,4 @@ export default async function handler(
 
     // 他者からのリクエストを受け付けないようにする
     // const username = session.user.name!
-}
-
-async function fetchGithubUser(userid: string) {
-    const response = await fetch(`https://api.github.com/user/${userid}`)
-    const data = await response.json()
-    return data.login
-}
-async function createWebhook(session: Session, extracted: string) {
-    const fetched = await prisma.user
-        .findUnique({
-            where: {
-                name: session.user.name!,
-            },
-        })
-        .then((res) => {
-            console.log(res)
-            return res
-        })
-    console.log(fetched?.image)
-    const regex = /\/u\/(\d+)\?/
-    const match = regex.exec(fetched?.image!)
-    let accountid: string = ""
-
-    if (match) {
-        accountid = match[1]
-    }
-    if (!accountid) return
-    const userName = await fetchGithubUser(accountid)
-    const url = `https://api.github.com/repos/${userName}/${extracted}/hooks`
-    const data = {
-        name: "web",
-        active: true,
-        events: ["push"],
-        config: {
-            url: urltmp,
-            content_type: "json",
-            insecure_ssl: "0",
-        },
-    }
-    const headers = {
-        Accept: "application/vnd.github+json",
-        Authorization: `Bearer ${session.user.accessToken}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-    }
-    try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers,
-            body: JSON.stringify(data),
-        })
-        const json = await response.json()
-        return json
-    } catch (error) {
-        console.error(error)
-    }
 }

@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react"
 import { TaskForInsert } from "../types/project"
 import Router, { useRouter } from "next/router"
 import { Task } from "../types/project"
+import { smallButton, cancelButton } from "../styles/templates"
 
 type Props = {
     setdummytask: React.Dispatch<React.SetStateAction<Task | undefined>>
@@ -87,14 +88,10 @@ const TaskInputField: React.FC<Props> = (setdummytask) => {
                         setDesc(e.currentTarget.value)
                     }}></textarea>
                 <div className="buttons flex mt-3">
-                    <button
-                        type="reset"
-                        className="btn border rounded border-gray-300 p-1 px-4 font-semibold cursor-pointer text-gray-500 ">
+                    <button type="reset" className={cancelButton}>
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className="btn border rounded border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-auto bg-indigo-500">
+                    <button type="submit" className={smallButton}>
                         Submit
                     </button>
                 </div>
