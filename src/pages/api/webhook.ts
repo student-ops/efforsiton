@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { CreatePrompt, getCommitFiles, ReqestGpt } from "../../lib/gptapi"
-import { webhookCommit } from "../../types/webhook"
+import { webhookCommit, WebhookCommitMinimal } from "../../types/webhook"
 import {
     InsertWebhookCommit,
     SelectWebhook,
@@ -45,7 +45,7 @@ export default async function handler(
     const result = await InsertWebhookCommit(webhookcommit)
     if (!result) return console.log("insert webhookCommit result is null")
     // false で絞っているが、切り替えが必要
-    let uncheckedCommit = await getUncheckedCommit(targetwebhook.id)
+    let uncheckedCommit: WebhookCommitMinimal[] = []
     uncheckedCommit.push({
         id: result.id,
         timestamp: webhookcommit.timestamp,
@@ -97,7 +97,7 @@ export default async function handler(
     //     console.log(answer)
     // }
 
-    // const answers = await ReqestGpt(myPrompts[0], targetwebhook.belongs)
-    // console.log(answers)
+    const answers = await ReqestGpt(myPrompts[0], targetwebhook.belongs)
+    console.log(answers)
     return
 }
