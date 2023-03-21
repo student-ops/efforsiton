@@ -2,7 +2,6 @@ import { Session } from "next-auth"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { useState, useEffect } from "react"
 import { NextPage, GetStaticProps } from "next"
-import NButton from "../components/normalButton"
 import ProjectList from "../components/projectList"
 import { Project } from "../types/project"
 

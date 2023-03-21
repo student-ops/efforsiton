@@ -1,62 +1,8 @@
-// import React, { useEffect, useRef } from "react"
-// import { Session } from "next-auth"
-// import { useSession } from "next-auth/react"
-
-// interface Repository {
-//     id: number
-//     name: string
-//     // other properties...
-// }
-
-// const fetchRepos = async (session: Session): Promise<Repository[]> => {
-//     // Return a rejected promise if the access token is not available
-//     if (!session?.user.accessToken) {
-//         return Promise.reject("Access token not found.")
-//     }
-//     const url = "https://api.github.com/user/repos?per_page=30"
-//     const headers = {
-//         Authorization: "token " + session.user.accessToken,
-//     }
-//     // Make the fetch request and parse the JSON response
-//     const response = await fetch(url, { headers })
-//     const data = await response.json()
-//     // Handle fetch and parsing errors
-//     if (!response.ok) {
-//         console.error("Failed to fetch repos:", data)
-//         return []
-//     }
-//     return data as Repository[]
-// }
-
-// const LinkRepo: React.FC<{ session: Session }> = ({ session }) => {
-//     const reposRef = useRef<Repository[]>([])
-//     useEffect(() => {
-//         fetchRepos(session)
-//             .then((data) => {
-//                 reposRef.current = data
-//             })
-//             .catch((error) => {
-//                 console.error("Failed to fetch repos:", error)
-//             })
-//     }, [session])
-//     return (
-//         <>
-//             <button className="bg-indigo-500 rounded text-white  p-2 shadow-lg">
-//                 Link to Repositry
-//             </button>
-//             {reposRef.current.map((repo) => (
-//                 <p key={repo.id}>{repo.name}</p>
-//             ))}
-//         </>
-//     )
-// }
-
-// export default LinkRepo
-
 import { useState, useEffect, useRef } from "react"
 import { Session } from "next-auth"
 import { Project } from "../types/project"
 import { cancelButton, smallButton } from "../styles/templates"
+import { useSession } from "next-auth/react"
 
 interface Repository {
     id: number
@@ -65,7 +11,6 @@ interface Repository {
 }
 
 interface Props {
-    session: Session
     project: Project
 }
 
@@ -73,6 +18,7 @@ const fetchRepos = async (session: Session): Promise<Repository[]> => {
     if (!session?.user.accessToken) {
         return Promise.reject("Access token not found.")
     }
+    console.log("82")
     const url = "https://api.github.com/user/repos?per_page=30"
     const headers = {
         Authorization: "token " + session.user.accessToken,
@@ -86,13 +32,14 @@ const fetchRepos = async (session: Session): Promise<Repository[]> => {
     return data as Repository[]
 }
 
-const LinkRepo: React.FC<Props> = ({ session, project }) => {
+const LinkRepo: React.FC<Props> = ({ project }) => {
+    const { data: session } = useSession()
     const [repos, setRepos] = useState<Repository[]>([])
     const [selectedRepoUrl, setSelectedRepoUrl] = useState<string>("")
     const [linkedRepo, setLinkedRepo] = useState<string>(project.linked)
 
     useEffect(() => {
-        fetchRepos(session)
+        fetchRepos(session!)
             .then((data) => {
                 setRepos(data)
             })

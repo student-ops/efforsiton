@@ -10,7 +10,6 @@ import { Session } from "next-auth"
 
 type Props = {
     project: Project
-    session: Session
 }
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     try {
@@ -74,8 +73,7 @@ const achieveTask = async (taskId: string) => {
     }
 }
 
-const Projectpage: CustomNextPage<Props> = ({ project, session }) => {
-    const userName = session?.user?.name
+const Projectpage: CustomNextPage<Props> = ({ project }) => {
     const [tasks, setTasks] = useState<Task[]>()
     const [dummytask, setdummytask] = useState<Task>()
     const [selectedTasksId, setId] = useState<string[]>([])
@@ -137,18 +135,10 @@ const Projectpage: CustomNextPage<Props> = ({ project, session }) => {
                                     {project.name}
                                 </h1>
                                 <p>{project.description}</p>
-                                <p>
-                                    created by{" "}
-                                    <span className="font-bold">
-                                        {userName}
-                                    </span>
-                                </p>
+                                <p>created by </p>
                             </div>
                             <div className="w-2/5 float-right">
-                                <LinkRepo
-                                    session={session!}
-                                    project={project!}
-                                />
+                                <LinkRepo project={project!} />
                             </div>
                         </div>
                         <SelectorContext.Provider value={value}>

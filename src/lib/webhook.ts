@@ -1,6 +1,7 @@
 import { Session } from "next-auth"
 import { Webhook, webhookCommit, WebhookCommitMinimal } from "../types/webhook"
 import prisma from "./prisma"
+import dotenv from "dotenv"
 
 export async function FetchGithubUser(session_username: string) {
     try {
@@ -36,6 +37,7 @@ export async function CreateWebhookByGithubapi(
     repo_name: string,
     owner: string
 ) {
+    dotenv.config()
     const urltmp = process.env.WEBHOOK_URL
     console.log(urltmp)
     const url = `https://api.github.com/repos/${owner}/${repo_name}/hooks`

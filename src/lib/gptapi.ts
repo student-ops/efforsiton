@@ -1,6 +1,7 @@
 import axios from "axios"
 import { PromptComponent, TaskforPrompt } from "../types/gptapi"
 import { Configuration, OpenAIApi } from "openai"
+import dotenv from "dotenv"
 
 interface File {
     filename: string
@@ -11,6 +12,8 @@ interface FileContent {
     filename: string
     contents: string
 }
+
+dotenv.config()
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
