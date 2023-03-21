@@ -46,15 +46,13 @@ export default async function handler(
     if (!result) return console.log("insert webhookCommit result is null")
     // false で絞っているが、切り替えが必要
     let uncheckedCommit: WebhookCommitMinimal[] = []
+    // 整理必要。現状pushされたコミットのみをセットしているが、データベースのuncheckedcommitをすべてチェックさせたい。
     uncheckedCommit.push({
         id: result.id,
         timestamp: webhookcommit.timestamp,
         after_sha: webhookcommit.after_sha,
         comment: webhookcommit.comment,
     })
-    // const message = parsedPayload.head_commit?.message
-    // const timestamp = parsedPayload.head_commit?.timestamp
-    // Process each commit and fetch the associated files
     const promptcomponent: PromptComponent[] = await Promise.all(
         uncheckedCommit.map((commit) =>
             getCommitFiles(owner, repo_name, commit.after_sha)
