@@ -97,8 +97,9 @@ export default async function handler(
             const answer = await requestWithRetry(prompt, targetwebhook.belongs)
             if (!answer) {
                 console.log("can't get propper answer")
-                return
+                return null
             }
+            return answer
         })
     )
     console.log(answers)
@@ -108,7 +109,7 @@ export async function requestWithRetry(
     prompt: string,
     webhookUrl: string,
     retries = 3
-): Promise<Suggestion> {
+): Promise<Suggestion | null> {
     let attempts = 0
     while (attempts < retries) {
         try {
@@ -124,5 +125,6 @@ export async function requestWithRetry(
             attempts++
         }
     }
-    throw new Error("Failed to fetch suggestion")
+    console.log("Failed to fetch suggestion")
+    return null
 }
