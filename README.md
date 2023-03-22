@@ -8,8 +8,6 @@ github アカウントでサインインしサインインしたアカウント�
 
 フロントエンド
 
-Next.js Reat.js Typescript TailWind ...
-
 <a href="https://nextjs.org/" title="Next.js"><img src="https://github.com/get-icon/geticon/raw/master/icons/nextjs-icon.svg" alt="Next.js" width="30px" height="30px"></a>
 <a href="https://reactjs.org/" title="React"><img src="https://github.com/get-icon/geticon/raw/master/icons/react.svg" alt="React" width="30px" height="30px"></a>
 <a href="https://www.typescriptlang.org/" title="Typescript"><img src="https://github.com/get-icon/geticon/raw/master/icons/typescript-icon.svg" alt="Typescript" width="30px" height="30px"></a>
@@ -17,21 +15,28 @@ Next.js Reat.js Typescript TailWind ...
 <a href="https://www.w3.org/TR/CSS/" title="CSS3"><img src="https://github.com/get-icon/geticon/raw/master/icons/css-3.svg" alt="CSS3" width="30px" height="30px"></a>
 <a href="https://tailwindcss.com/" title="Tailwind CSS"><img src="https://github.com/get-icon/geticon/raw/master/icons/tailwindcss-icon.svg" alt="Tailwind CSS" width="30px" height="30px"></a>
 
-バックエンド
+-   Next.js
+-   Reat.js
+-   Typescript
+-   TailWind ...
 
-Node.js Typescript
+バックエンド
 
 <a href="https://nodejs.org/" title="Node.js"><img src="https://github.com/get-icon/geticon/raw/master/icons/nodejs-icon.svg" alt="Node.js" width="30px" height="30px"></a>
 <a href="https://www.typescriptlang.org/" title="Typescript"><img src="https://github.com/get-icon/geticon/raw/master/icons/typescript-icon.svg" alt="Typescript" width="30px" height="30px"></a>
 
-インフラ、その他
+-   Node.js
+-   Typescript
 
-Dcoker Aws
+インフラ、その他
 
 <a href="https://aws.amazon.com/" title="AWS"><img src="https://github.com/get-icon/geticon/raw/master/icons/aws.svg" alt="AWS" width="30px" height="30px"></a>
 <a href="https://www.docker.com/" title="docker"><img src="https://github.com/get-icon/geticon/raw/master/icons/docker-icon.svg" alt="docker" width="30px" height="30px"></a>
 
-porwerd by <a href="https://github.com/get-icon/geticon">geticon</a>
+-   Dcoker
+-   AWS
+
+<sup>porwerd by <a href="https://github.com/get-icon/geticon">geticon</a></sup>
 
 # 詳細
 
