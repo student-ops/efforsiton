@@ -102,6 +102,7 @@ export default async function handler(
         }
         answers?.push(answer)
     }
+    console.log(answers)
     const mergedarray = mergeArrays(answers)
     mergedarray.map(async (answer) => {
         if (!answer.acheived) return
