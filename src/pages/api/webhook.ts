@@ -5,6 +5,7 @@ import { InsertWebhookCommit, SelectWebhook } from "../../lib/webhook"
 import { PromptComponent, TaskforPrompt } from "../../types/gptapi"
 import { SelectUnachievedTask } from "../../lib/task"
 import { Suggestion } from "../../types/suggestion"
+import prisma from "../../lib/prisma"
 
 export default async function handler(
     req: NextApiRequest,
