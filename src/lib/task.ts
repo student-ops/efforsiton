@@ -14,6 +14,7 @@ export async function SelectUnachievedTask(projectId: string) {
     const tasks = await prisma.tasks.findMany({
         where: {
             belongs: projectId,
+            suggested: false,
             acheived: false,
         },
     })

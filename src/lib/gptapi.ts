@@ -82,7 +82,7 @@ export function CreatePrompt(
         )
         .join(",\n  ")
     let promptMessage = `Commnad:
-Guess the completed task from the updated content of the code.
+Guess the completed task from the updated content of the code.Evaluate all tasks and answer with true or false.
 Answer only in the following format:\n
 
 [
