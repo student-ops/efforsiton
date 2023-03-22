@@ -8,7 +8,7 @@
         "start": "next start",
         "lint": "next lint",
         "dbpush": "npx prisma format && npx prisma migrate dev --name normal",
-        "start:migrate:prod": "npx prisma migrate deploy && npm run dev"
+        "start:migrate:prod": "npx prisma migrate deploy && npx prsim generate && npm run dev"
     },
     "prisma": {
         "schema": "./prisma/schema.prisma"
