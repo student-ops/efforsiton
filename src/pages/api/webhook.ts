@@ -94,6 +94,7 @@ export default async function handler(
 
     for (const prompt of myPrompts) {
         const answer = await requestWithRetry(prompt, targetwebhook.belongs)
+        console.log(answer)
         answer?.map(async (suggestion) => {
             if (!suggestion.acheived) return
             const result = await prisma.sugestions
