@@ -67,9 +67,6 @@ export default async function handler(
                 })
         )
     ).then((components) => components.flat())
-    console.log("########################")
-    console.log(promptcomponent)
-    console.log("########################")
 
     const filteredPrompt = promptcomponent.filter(
         (component) => component.contents.length < 1500
@@ -87,6 +84,7 @@ export default async function handler(
     filteredPrompt.map((prompt) => {
         myPrompts.push(CreatePrompt(prompt, tasksforprompt))
     })
+    console.log(myPrompts)
     // let answers: string[] = []
     // for (const prompt of myPrompts) {
     //     const answer = await ReqestGpt(prompt, targetwebhook.belongs)
