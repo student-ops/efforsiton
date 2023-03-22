@@ -71,7 +71,7 @@ export default async function handler(
     console.log("########################")
 
     const filteredPrompt = promptcomponent.filter(
-        (component) => component.contents.length > 1000
+        (component) => component.contents.length < 1000
     )
     const relatedtasks = await SelectUnachievedTask(targetwebhook.belongs)
     if (relatedtasks.length === 0) return console.log("relatedtasks is null")
