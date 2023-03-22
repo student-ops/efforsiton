@@ -96,7 +96,7 @@ export default async function handler(
         const answer = await requestWithRetry(prompt, targetwebhook.belongs)
         answer?.map(async (suggestion) => {
             if (!suggestion.acheived) return
-            await prisma.sugestions
+            const result = await prisma.sugestions
                 .upsert({
                     where: { task_id: suggestion.task_id },
                     create: {
@@ -108,6 +108,7 @@ export default async function handler(
                 .catch((err) => {
                     console.log(err)
                 })
+            console.log(result)
         })
         if (!answer) {
             console.log("can't get proper answer")
