@@ -71,7 +71,7 @@ export default async function handler(
     console.log("########################")
 
     const filteredPrompt = promptcomponent.filter(
-        (component) => component.contents.length < 1000
+        (component) => component.contents.length < 1500
     )
     const relatedtasks = await SelectUnachievedTask(targetwebhook.belongs)
     if (relatedtasks.length === 0) return console.log("relatedtasks is null")
@@ -92,29 +92,39 @@ export default async function handler(
     //     answers.push(answer)
     //     console.log(answer)
 
+    let answers: Suggestion[][] = []
     for (const prompt of myPrompts) {
         const answer = await requestWithRetry(prompt, targetwebhook.belongs)
-        console.log(answer)
+        if (!answer) return console.log("answer is null")
+        answers?.push(answer)
         answer?.map(async (suggestion) => {
             if (!suggestion.acheived) return
-            const result = await prisma.sugestions
-                .upsert({
-                    where: { task_id: suggestion.task_id },
-                    create: {
-                        task_id: suggestion.task_id,
-                        checked: false,
-                    },
-                    update: {},
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
             console.log(result)
         })
         if (!answer) {
             console.log("can't get proper answer")
         }
     }
+    const mergedarray = mergeArrays(answers)
+    const exitstingsuggestion = await prisma.suggestions.findMany({
+        where: {
+            belongs: targetwebhook.belongs,
+        },
+    })
+
+    // 修正必須　最初にexitstingを排除する
+    mergedarray.map((suggest) => {
+        exitstingsuggestion.map((exist) => {
+            if (suggest.task_id === exist.task_id) return
+        })
+        prisma.suggestions.create({
+            data: {
+                belongs: targetwebhook.belongs,
+                task_id: suggest.task_id,
+                checked: false,
+            },
+        })
+    })
     return
 }
 export async function requestWithRetry(

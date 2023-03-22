@@ -75,12 +75,15 @@ model Projects {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Tasks[]
   webhooks    Webhook[]
+  suggestions Suggestions[]
 }
 
-model Sugestions {
+model Suggestions {
   id      String  @id @default(cuid())
   task_id String  @unique
   checked Boolean @default(false)
+    belongs     String
+  belongsTo   Projects  @relation(fields: [belongs], references: [id], onDelete: Cascade)
 }
 
 model Webhook {
