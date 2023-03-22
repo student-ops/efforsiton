@@ -69,6 +69,9 @@ export default async function handler(
                 })
         )
     ).then((components) => components.flat())
+    console.log("########################")
+    console.log(promptcomponent)
+    console.log("########################")
 
     const filteredPrompt = promptcomponent.filter(
         (component) => component.contents.length > 1000

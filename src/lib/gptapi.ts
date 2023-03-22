@@ -96,7 +96,7 @@ update data:
     filename:"${component.filename}"
     commit comment:"${component.comment}"
     content "{
-    ${component.contents}
+        ${component.contents}
     }"
 },
 ###############
