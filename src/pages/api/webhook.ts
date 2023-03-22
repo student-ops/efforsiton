@@ -92,17 +92,18 @@ export default async function handler(
     //     answers.push(answer)
     //     console.log(answer)
 
-    const answers = await Promise.all(
-        myPrompts.map(async (prompt) => {
-            const answer = await requestWithRetry(prompt, targetwebhook.belongs)
-            if (!answer) {
-                console.log("can't get propper answer")
-                return null
-            }
-            return answer
-        })
-    )
-    console.log(answers)
+    const answers: Suggestion[][] = []
+    for (const prompt of myPrompts) {
+        const answer = await requestWithRetry(prompt, targetwebhook.belongs)
+        if (!answer) {
+            console.log("can't get proper answer")
+            answers.push([]) // 空の配列を追加して、他の結果とインデックスが一致するようにする
+        } else {
+            answers.push(answer) // answer を answers 配列に追加
+        }
+    }
+    const mergedAnswers = mergeArrays(answers)
+    console.log(mergedAnswers)
     return
 }
 export async function requestWithRetry(
@@ -147,4 +148,20 @@ export function preprocessJson(text: string) {
     }
 
     return result
+}
+
+function mergeArrays(arrays: Suggestion[][]): Suggestion[] {
+    const mergedArray: Suggestion[] = arrays[0].map((item) => ({
+        ...item,
+        acheived: false,
+    }))
+
+    for (const array of arrays) {
+        for (let i = 0; i < array.length; i++) {
+            mergedArray[i].acheived =
+                mergedArray[i].acheived || array[i].acheived
+        }
+    }
+
+    return mergedArray
 }
