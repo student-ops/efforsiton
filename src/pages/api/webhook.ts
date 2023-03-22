@@ -96,15 +96,11 @@ export default async function handler(
     let answers: Suggestion[][] = []
     for (const prompt of myPrompts) {
         const answer = await requestWithRetry(prompt, targetwebhook.belongs)
-        if (!answer) return console.log("answer is null")
-        answers?.push(answer)
-        answer?.map(async (suggestion) => {
-            if (!suggestion.acheived) return
-            console.log(result)
-        })
-        if (!answer) {
+        if (!answer || answer.length === 0) {
             console.log("can't get proper answer")
+            return
         }
+        answers?.push(answer)
     }
     const mergedarray = mergeArrays(answers)
     mergedarray.map(async (answer) => {

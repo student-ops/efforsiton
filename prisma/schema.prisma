@@ -66,24 +66,24 @@ model Tasks {
 }
 
 model Projects {
-  id          String    @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String?
   userId      String
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime      @default(now())
   linked      String?
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Tasks[]
   webhooks    Webhook[]
   suggestions Suggestions[]
 }
 
 model Suggestions {
-  id      String  @id @default(cuid())
-  task_id String  @unique
-  checked Boolean @default(false)
-  belongs     String
-  belongsTo   Projects  @relation(fields: [belongs], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  task_id   String   @unique
+  checked   Boolean  @default(false)
+  belongs   String
+  belongsTo Projects @relation(fields: [belongs], references: [id], onDelete: Cascade)
 }
 
 model Webhook {
