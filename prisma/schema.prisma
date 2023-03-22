@@ -63,6 +63,7 @@ model Tasks {
   acheived    Boolean   @default(false)
   description String?
   acheivedAt  DateTime?
+  sugested Boolean @default(false)
 }
 
 model Projects {
@@ -75,16 +76,8 @@ model Projects {
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Tasks[]
   webhooks    Webhook[]
-  suggestions Suggestions[]
 }
 
-model Suggestions {
-  id        String   @id @default(cuid())
-  task_id   String   @unique
-  checked   Boolean  @default(false)
-  belongs   String
-  belongsTo Projects @relation(fields: [belongs], references: [id], onDelete: Cascade)
-}
 
 model Webhook {
   id            String          @id @default(cuid())
