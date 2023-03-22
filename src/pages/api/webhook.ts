@@ -25,8 +25,6 @@ export default async function handler(
     const owner = parsedPayload.repository?.owner?.name
     const repo_name = parsedPayload.repository?.name
     const after_sha = parsedPayload.after
-    const added = parsedPayload.head_commit?.added as string[]
-    console.log("added: ", added)
 
     const targetwebhook = await SelectWebhook(owner, repo_name)
     // error handling
@@ -53,6 +51,7 @@ export default async function handler(
         after_sha: webhookcommit.after_sha,
         comment: webhookcommit.comment,
     })
+    //　githubapiからコミット情報を使用して実際の更新内容を取得する
     const promptcomponent: PromptComponent[] = await Promise.all(
         uncheckedCommit.map((commit) =>
             getCommitFiles(owner, repo_name, commit.after_sha)
@@ -70,7 +69,6 @@ export default async function handler(
                 })
         )
     ).then((components) => components.flat())
-    console.log("promptcomponent: ", promptcomponent[0])
 
     const filteredPrompt = promptcomponent.filter(
         (component) => component.contents.length > 1000
@@ -93,9 +91,13 @@ export default async function handler(
     //     const answer = await ReqestGpt(prompt, targetwebhook.belongs)
     //     answers.push(answer)
     //     console.log(answer)
-    // }
+    const answers = await Promise.all(
+        myPrompts.map((prompt) => {
+            console.log(prompt)
+            return ReqestGpt(prompt, targetwebhook.belongs)
+        })
+    )
 
-    const answers = await ReqestGpt(myPrompts[0], targetwebhook.belongs)
     console.log(answers)
     return
 }
