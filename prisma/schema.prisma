@@ -63,21 +63,20 @@ model Tasks {
   acheived    Boolean   @default(false)
   description String?
   acheivedAt  DateTime?
-  sugested Boolean @default(false)
+  suggested   Boolean   @default(false)
 }
 
 model Projects {
-  id          String        @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
   description String?
   userId      String
-  createdAt   DateTime      @default(now())
+  createdAt   DateTime  @default(now())
   linked      String?
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Tasks[]
   webhooks    Webhook[]
 }
-
 
 model Webhook {
   id            String          @id @default(cuid())

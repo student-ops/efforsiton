@@ -105,11 +105,12 @@ export default async function handler(
     const mergedarray = mergeArrays(answers)
     mergedarray.map(async (answer) => {
         if (!answer.acheived) return
-        const res = await prisma.suggestions.create({
+        const res = await prisma.tasks.update({
+            where: {
+                id: answer.task_id,
+            },
             data: {
-                belongs: targetwebhook.belongs,
-                checked: false,
-                task_id: answer.task_id,
+                suggested: true,
             },
         })
         console.log(res)
