@@ -109,7 +109,7 @@ export async function requestWithRetry(
     prompt: string,
     webhookUrl: string,
     retries = 3
-): Promise<Suggestion | null> {
+): Promise<Suggestion[] | null> {
     let attempts = 0
     while (attempts < retries) {
         try {
@@ -117,7 +117,7 @@ export async function requestWithRetry(
             console.log("############################")
             console.log(response)
             const trimed = response.substring(response.indexOf("["))
-            const suggestion = JSON.parse(trimed as string) as Suggestion // Try parsing the response
+            const suggestion = JSON.parse(trimed as string) as Suggestion[] // Try parsing the response
             console.log("success")
             return suggestion
         } catch (error) {
