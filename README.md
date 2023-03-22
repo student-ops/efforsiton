@@ -8,6 +8,8 @@
 
 ## 工夫
 
+/tests/json.ts
+
 ## 修正ポイント
 
 webhook api

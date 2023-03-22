@@ -114,9 +114,7 @@ export async function requestWithRetry(
     while (attempts < retries) {
         try {
             const response = await ReqestGpt(prompt, webhookUrl)
-            console.log("############################")
-            console.log(response)
-            const trimed = response.substring(response.indexOf("["))
+            const trimed = preprocessJson(response)
             const suggestion = JSON.parse(trimed as string) as Suggestion[] // Try parsing the response
             console.log("success")
             return suggestion
@@ -127,4 +125,26 @@ export async function requestWithRetry(
     }
     console.log("Failed to fetch suggestion")
     return null
+}
+export function preprocessJson(text: string) {
+    const jsonStartIndex = text.indexOf("[")
+    const jsonEndIndex = text.lastIndexOf("]") + 1
+    const jsonString = text.slice(jsonStartIndex, jsonEndIndex)
+
+    const lines = jsonString.split("\n").map((line) => line.trim())
+    let result = ""
+
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i]
+        if (
+            i < lines.length - 1 &&
+            lines[i + 1].trim() === "]" &&
+            line.endsWith(",")
+        ) {
+            line = line.slice(0, -1)
+        }
+        result += line
+    }
+
+    return result
 }
