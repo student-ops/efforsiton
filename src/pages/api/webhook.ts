@@ -113,6 +113,8 @@ export async function requestWithRetry(
     while (attempts < retries) {
         try {
             const response = await ReqestGpt(prompt, webhookUrl)
+            console.log("############################")
+            console.log(response)
             const trimed = response.substring(response.indexOf("["))
             const suggestion = JSON.parse(trimed as string) as Suggestion // Try parsing the response
             console.log("success")
