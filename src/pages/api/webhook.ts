@@ -173,9 +173,10 @@ export function preprocessJson(text: string) {
 }
 
 function mergeArrays(arrays: Suggestion[][]): Suggestion[] {
+    if (!arrays || arrays.length === 0) return []
     const mergedArray: Suggestion[] = arrays[0].map((item) => ({
         ...item,
-        acheived: false,
+        achieved: false,
     }))
 
     for (const array of arrays) {
