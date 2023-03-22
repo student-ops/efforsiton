@@ -107,25 +107,35 @@ export default async function handler(
         }
     }
     const mergedarray = mergeArrays(answers)
-    const exitstingsuggestion = await prisma.suggestions.findMany({
-        where: {
-            belongs: targetwebhook.belongs,
-        },
-    })
-
-    // 修正必須　最初にexitstingを排除する
-    mergedarray.map((suggest) => {
-        exitstingsuggestion.map((exist) => {
-            if (suggest.task_id === exist.task_id) return
-        })
-        prisma.suggestions.create({
+    mergedarray.map(async (answer) => {
+        const res = await prisma.suggestions.create({
             data: {
                 belongs: targetwebhook.belongs,
-                task_id: suggest.task_id,
                 checked: false,
+                task_id: answer.task_id,
             },
         })
+        console.log(res)
     })
+    // const exitstingsuggestion = await prisma.suggestions.findMany({
+    //     where: {
+    //         belongs: targetwebhook.belongs,
+    //     },
+    // })
+
+    // 修正必須　最初にexitstingを排除する
+    // mergedarray.map((suggest) => {
+    //     exitstingsuggestion.map((exist) => {
+    //         if (suggest.task_id === exist.task_id) return
+    //     })
+    //     prisma.suggestions.create({
+    //         data: {
+    //             belongs: targetwebhook.belongs,
+    //             task_id: suggest.task_id,
+    //             checked: false,
+    //         },
+    //     })
+    // })
     return
 }
 export async function requestWithRetry(
