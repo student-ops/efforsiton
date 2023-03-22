@@ -1,9 +1,4 @@
-function hello() {
-    console.log("hello")
-    let a = null
-    if (!null) {
-        console.log("hello")
-    }
-}
+export {}
 
-hello()
+console.log("hello world")
+console.log("just a test")

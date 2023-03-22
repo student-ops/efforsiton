@@ -79,6 +79,7 @@ model Projects {
 
 model Sugestions {
   id      String  @id @default(cuid())
+  task_id String  @unique
   checked Boolean @default(false)
 }
 

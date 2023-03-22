@@ -92,18 +92,27 @@ export default async function handler(
     //     answers.push(answer)
     //     console.log(answer)
 
-    const answers: Suggestion[][] = []
     for (const prompt of myPrompts) {
         const answer = await requestWithRetry(prompt, targetwebhook.belongs)
+        answer?.map(async (suggestion) => {
+            if (!suggestion.acheived) return
+            await prisma.sugestions
+                .upsert({
+                    where: { task_id: suggestion.task_id },
+                    create: {
+                        task_id: suggestion.task_id,
+                        checked: false,
+                    },
+                    update: {},
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        })
         if (!answer) {
             console.log("can't get proper answer")
-            answers.push([]) // 空の配列を追加して、他の結果とインデックスが一致するようにする
-        } else {
-            answers.push(answer) // answer を answers 配列に追加
         }
     }
-    const mergedAnswers = mergeArrays(answers)
-    console.log(mergedAnswers)
     return
 }
 export async function requestWithRetry(
