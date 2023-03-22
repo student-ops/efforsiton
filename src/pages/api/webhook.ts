@@ -1,13 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { CreatePrompt, getCommitFiles, ReqestGpt } from "../../lib/gptapi"
 import { webhookCommit, WebhookCommitMinimal } from "../../types/webhook"
-import {
-    InsertWebhookCommit,
-    SelectWebhook,
-    getUncheckedCommit,
-} from "../../lib/webhook"
+import { InsertWebhookCommit, SelectWebhook } from "../../lib/webhook"
 import { PromptComponent, TaskforPrompt } from "../../types/gptapi"
 import { SelectUnachievedTask } from "../../lib/task"
+import { Suggestion } from "../../types/suggestion"
 
 export default async function handler(
     req: NextApiRequest,
@@ -94,13 +91,35 @@ export default async function handler(
     //     const answer = await ReqestGpt(prompt, targetwebhook.belongs)
     //     answers.push(answer)
     //     console.log(answer)
+
     const answers = await Promise.all(
-        myPrompts.map((prompt) => {
-            console.log(prompt)
-            return ReqestGpt(prompt, targetwebhook.belongs)
+        myPrompts.map(async (prompt) => {
+            const answer = await requestWithRetry(prompt, targetwebhook.belongs)
+            if (!answer) {
+                console.log("can't get propper answer")
+                return
+            }
         })
     )
-
     console.log(answers)
     return
+}
+export async function requestWithRetry(
+    prompt: string,
+    webhookUrl: string,
+    retries = 3
+): Promise<Suggestion> {
+    let attempts = 0
+    while (attempts < retries) {
+        try {
+            const response = await ReqestGpt(prompt, webhookUrl)
+            const suggestion = JSON.parse(response as string) as Suggestion // Try parsing the response
+            console.log("success")
+            return suggestion
+        } catch (error) {
+            console.error(`Attempt ${attempts + 1} failed: ${error}`)
+            attempts++
+        }
+    }
+    throw new Error("Failed to fetch suggestion")
 }
