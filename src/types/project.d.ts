@@ -17,6 +17,7 @@ export interface Task {
     acheived: boolean
     belongsTo: string
     parentId: string | null
+    suggested: boolean
 }
 
 export interface TaskForInsert {

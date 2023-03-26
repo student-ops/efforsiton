@@ -22,6 +22,7 @@ export default async function handler(
     const projectid = req.query.projectid as string
     if (req.method === "POST") {
         const repo = req.query.linkTo as string
+        console.log(repo)
         if (!projectid || !repo) {
             res.status(400).send("project id or repo is null\n")
             return
@@ -29,7 +30,7 @@ export default async function handler(
         const regex = /\/([^/]+)$/i
         const match = repo.match(regex)
         const repo_name = match ? match[1] : ""
-        const owner = await FetchGithubUser(session.user.name!)
+        const owner = await FetchGithubUser(session.user.image!)
         if (!owner) {
             res.status(401).send("can't fetch owner\n")
             return

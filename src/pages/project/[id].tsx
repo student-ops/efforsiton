@@ -4,12 +4,14 @@ import { CustomNextPage } from "../../types/custom-next-page"
 import { FetchProjectFromId } from "../../lib/project"
 import TaskInputField from "../../components/taskinputfield"
 import TaskViwer from "../../components/tasksViwer"
-import { useEffect, useState, createContext, useContext } from "react"
+import { useEffect, useState, createContext } from "react"
 import LinkRepo from "../../components/linkRepo"
+import { PopUpComponent } from "../../components/tmp"
 import { Session } from "next-auth"
 
 type Props = {
     project: Project
+    myprojects: Project[]
 }
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     try {
@@ -34,17 +36,17 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
         }
     }
 }
+
 interface SelectorContextValue {
     selectedTasksId: string[]
     setId: (value: string[]) => void
 }
-
-export const SelectorContext = createContext<SelectorContextValue>({
+export const TaskviwerSelectorContext = createContext<SelectorContextValue>({
     selectedTasksId: [],
     setId: () => {},
 })
 
-const fetchTasksFromApi = async (projectid: string) => {
+const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
     const taskarray: Task[] = await fetch(`/api/task?projectid=${projectid}`, {
         method: "GET",
     })
@@ -60,16 +62,17 @@ const fetchTasksFromApi = async (projectid: string) => {
     return taskarray
 }
 
-const achieveTask = async (taskId: string) => {
-    const response = await fetch(`/api/acheiveTask?taskid=${taskId}`, {
+const achieveTask = async (taskIds: string[]) => {
+    const response = await fetch("/api/acheiveTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
+        body: JSON.stringify({ taskIds }),
     })
 
     if (!response.ok) {
-        throw new Error("Failed to achieve task")
+        console.log("Failed to achieve tasks")
     }
 }
 
@@ -79,7 +82,13 @@ const Projectpage: CustomNextPage<Props> = ({ project }) => {
     const [selectedTasksId, setId] = useState<string[]>([])
     const [acheivedTasks, setAcheivedTasks] = useState<Task[]>([])
     const [unacheivedTasks, setUnacheivedTasks] = useState<Task[]>([])
+    const [suggetedTasks, setSuggetedTasks] = useState<Task[]>([])
+    const [viewFlag, setViewFlag] = useState<boolean>(false)
     const value = { selectedTasksId, setId }
+    const fetchTasks = async () => {
+        const taskArray = await fetchTasksFromApi(project.id)
+        setTasks(taskArray)
+    }
 
     useEffect(() => {
         if (dummytask) {
@@ -90,41 +99,65 @@ const Projectpage: CustomNextPage<Props> = ({ project }) => {
         if (tasks) {
             const newAcheivedTasks: Task[] = []
             const newUnacheivedTasks: Task[] = []
+            const newSuggetedTasks: Task[] = []
             tasks.forEach((task) => {
                 if (task.acheived) {
                     newAcheivedTasks.push(task)
                 } else {
                     newUnacheivedTasks.push(task)
                 }
+                if (task.suggested && !task.acheived) {
+                    newSuggetedTasks.push(task)
+                    setViewFlag(true)
+                }
             })
             setAcheivedTasks(newAcheivedTasks)
             setUnacheivedTasks(newUnacheivedTasks)
+            setSuggetedTasks(newSuggetedTasks)
         }
     }, [tasks])
+
     useEffect(() => {
-        const fetchTasks = async () => {
-            const taskArray = await fetchTasksFromApi(project.id)
-            setTasks(taskArray)
-        }
         fetchTasks()
     }, [project.id])
+
     const markSelectedTasksAsAchieved = () => {
-        const updatedAcheivedTasks = [...acheivedTasks]
-        const updatedUnacheivedTasks = unacheivedTasks.filter((task) => {
-            if (selectedTasksId.includes(task.id)) {
-                achieveTask(task.id)
-                updatedAcheivedTasks.push({ ...task, acheived: true })
-                task.acheived = true
-                return false
-            }
-            return true
-        })
-        setAcheivedTasks(updatedAcheivedTasks)
-        setUnacheivedTasks(updatedUnacheivedTasks)
-        setId([])
+        achieveTask(selectedTasksId)
+            .then(() => {
+                const { updatedAchievedTasks, updatedUnachievedTasks } =
+                    unacheivedTasks.reduce(
+                        (
+                            acc: {
+                                updatedAchievedTasks: Task[]
+                                updatedUnachievedTasks: Task[]
+                            },
+                            task: Task
+                        ) => {
+                            if (selectedTasksId.includes(task.id)) {
+                                acc.updatedAchievedTasks.push(task)
+                            } else {
+                                acc.updatedUnachievedTasks.push(task)
+                            }
+                            return acc
+                        },
+                        {
+                            updatedAchievedTasks: [...acheivedTasks],
+                            updatedUnachievedTasks: [], // 空の配列を初期値として割り当てる
+                        }
+                    )
+
+                setAcheivedTasks(updatedAchievedTasks)
+                setUnacheivedTasks(updatedUnachievedTasks)
+                setId([])
+            })
+            .catch((error) => {
+                console.error("Failed to achieve tasks:", error.message)
+            })
     }
+
     return (
         <>
+            {viewFlag && <PopUpComponent suggestions={suggetedTasks} />}
             <div className="flex h-secreen">
                 <div className="w-1/5">Your projects</div>
                 <div className="w-4/5">
@@ -135,18 +168,18 @@ const Projectpage: CustomNextPage<Props> = ({ project }) => {
                                     {project.name}
                                 </h1>
                                 <p>{project.description}</p>
-                                <p>created by </p>
                             </div>
-                            <div className="w-2/5 float-right">
+                            <div className="w-2/5 float-right flex-col justify-center ">
                                 <LinkRepo project={project!} />
+                                <div onClick={fetchTasks}>update</div>
                             </div>
                         </div>
-                        <SelectorContext.Provider value={value}>
+                        <TaskviwerSelectorContext.Provider value={value}>
                             <TaskViwer
                                 acheivedtasks={acheivedTasks}
                                 unacheivedtasks={unacheivedTasks}
                             />
-                        </SelectorContext.Provider>
+                        </TaskviwerSelectorContext.Provider>
                     </div>
                     <div className="flex  justify-between w-full my-3">
                         <div id="buttons" className="w-2/5">

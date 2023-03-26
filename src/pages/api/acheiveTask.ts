@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { getSession } from "next-auth/react"
-import { AcheiveTask } from "../../lib/task"
+import { AchieveTask } from "../../lib/task"
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     const session = await getSession({ req })
@@ -8,15 +8,16 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         res.status(401).json({ error: "Unauthorized" })
         return
     }
-    const taskid = req.query
-    if (!taskid.taskid) {
-        res.status(400).send("task id is null\n")
+    const taskIds: string[] = req.body.taskIds
+    console.log(taskIds)
+    if (!taskIds) {
+        res.status(400).send("Task IDs are null\n")
     }
-    await AcheiveTask(taskid.taskid! as string)
+    await AchieveTask(taskIds)
         .then(() => {
             res.status(200).send("accepted")
         })
-        .catch((err) => {
+        .catch((err: Error) => {
             res.status(400).send(err)
         })
     return

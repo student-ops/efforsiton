@@ -34,25 +34,34 @@ export async function InsertTask(task: TaskForInsert) {
     return res
 }
 
-export async function AcheiveTask(taskid: string) {
-    const task = await prisma.tasks.findUnique({
+export async function AchieveTask(taskIds: string | string[]) {
+    // Ensure taskIds is an array
+    const taskIdsArray = Array.isArray(taskIds) ? taskIds : [taskIds]
+
+    // Find tasks by taskIds
+    const tasks = await prisma.tasks.findMany({
         where: {
-            id: taskid,
+            id: {
+                in: taskIdsArray,
+            },
         },
     })
 
-    if (task?.acheived) {
-        console.log("already acheived")
-        return // already achieved, no need to update
-    }
+    // Filter out tasks that are already achieved
+    const tasksToUpdate = tasks.filter((task) => !task.acheived)
 
-    await prisma.tasks.update({
-        where: {
-            id: taskid,
-        },
-        data: {
-            acheived: true,
-            acheivedAt: new Date(),
-        },
-    })
+    // Update each task
+    const updateTasksPromises = tasksToUpdate.map((task) =>
+        prisma.tasks.update({
+            where: {
+                id: task.id,
+            },
+            data: {
+                acheived: true,
+                acheivedAt: new Date(),
+            },
+        })
+    )
+
+    await Promise.all(updateTasksPromises)
 }

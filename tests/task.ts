@@ -1,25 +1,19 @@
-import { TaskForInsert } from "../src/types/project"
-import prisma from "../src/lib/prisma"
-import { SelectTasks } from "../src/lib/task"
-export async function InsertTask(task: TaskForInsert) {
-    await prisma.tasks.create({
-        data: {
-            parentId: task.parentId ?? null,
-            belongs: task.belongsTo,
-            name: task.name,
-            description: task.description ?? null,
-        },
-    })
-    return
-}
+// サンプルデータ
+export {}
+const suggestions = [
+    { id: "task1", name: "Task 1" },
+    { id: "task2", name: "Task 2" },
+    { id: "task3", name: "Task 3" },
+]
 
-const mytask = {
-    belongsTo: "clf04s8070001umt6j0mewp4x",
-    name: " add task viwer",
-    description: "add task viwer to the project page",
-    parentId: null,
-}
+// tasksId 配列の作成
+const tasksId = suggestions.map((task) => task.id)
 
-SelectTasks(mytask.belongsTo).then((tasks) => {
-    tasks.map((task) => console.log(task))
-})
+// 期待される結果
+const expectedTasksId = ["task1", "task2", "task3"]
+
+// テスト結果
+const testResult = JSON.stringify(tasksId) === JSON.stringify(expectedTasksId)
+
+console.log("Test result:", testResult ? "Passed" : "Failed")
+console.log("Generated tasksId:", tasksId)

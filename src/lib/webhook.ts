@@ -3,21 +3,10 @@ import { Webhook, webhookCommit, WebhookCommitMinimal } from "../types/webhook"
 import prisma from "./prisma"
 import dotenv from "dotenv"
 
-export async function FetchGithubUser(session_username: string) {
+export async function FetchGithubUser(user_image: string) {
     try {
-        const fetched = await prisma.user
-            .findUnique({
-                where: {
-                    name: session_username,
-                },
-            })
-            .then((res) => {
-                console.log(res)
-                return res
-            })
-        console.log(fetched?.image)
         const regex = /\/u\/(\d+)\?/
-        const match = regex.exec(fetched?.image!)
+        const match = regex.exec(user_image!)
         let accountid: string = ""
 
         if (match) {
@@ -26,9 +15,10 @@ export async function FetchGithubUser(session_username: string) {
         if (!accountid) return
         const response = await fetch(`https://api.github.com/user/${accountid}`)
         const data = await response.json()
-        return data.login
+        return data.login as string
     } catch (error) {
         console.error(error)
+        return null
     }
 }
 
@@ -84,20 +74,23 @@ export async function deleteWebhookFromGithubRepo(
         "X-GitHub-Api-Version": "2022-11-28",
     }
 
-    try {
-        const response = await fetch(url, {
-            method: "DELETE",
-            headers,
+    fetch(url, {
+        method: "DELETE",
+        headers,
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(
+                    `Failed to delete webhook: ${response.statusText}`
+                )
+            }
         })
-
-        if (!response.ok) {
-            throw new Error(`Failed to delete webhook: ${response.statusText}`)
-        }
-    } catch (error) {
-        console.error(error)
-        throw new Error("Failed to delete webhook")
-    }
+        .catch((error) => {
+            console.error(error)
+            throw new Error("Failed to delete webhook")
+        })
 }
+
 export async function InsertWebhook(webhook: Webhook) {
     try {
         let result = await prisma.webhook.create({

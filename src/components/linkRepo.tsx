@@ -14,11 +14,29 @@ interface Props {
     project: Project
 }
 
+export async function FetchGithubUser(user_image: string) {
+    try {
+        const regex = /\/u\/(\d+)\?/
+        const match = regex.exec(user_image!)
+        let accountid: string = ""
+
+        if (match) {
+            accountid = match[1]
+        }
+        if (!accountid) return
+        const response = await fetch(`https://api.github.com/user/${accountid}`)
+        const data = await response.json()
+        console.log(data.login)
+        return data.login
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 const fetchRepos = async (session: Session): Promise<Repository[]> => {
     if (!session?.user.accessToken) {
         return Promise.reject("Access token not found.")
     }
-    console.log("82")
     const url = "https://api.github.com/user/repos?per_page=30"
     const headers = {
         Authorization: "token " + session.user.accessToken,
@@ -37,6 +55,15 @@ const LinkRepo: React.FC<Props> = ({ project }) => {
     const [repos, setRepos] = useState<Repository[]>([])
     const [selectedRepoUrl, setSelectedRepoUrl] = useState<string>("")
     const [linkedRepo, setLinkedRepo] = useState<string>(project.linked)
+    const [username, setUsername] = useState("")
+
+    useEffect(() => {
+        async function fetchData() {
+            const fetchedUsername = await FetchGithubUser(session?.user.image!)
+            setUsername(fetchedUsername)
+        }
+        fetchData()
+    }, [])
 
     useEffect(() => {
         fetchRepos(session!)
@@ -115,7 +142,7 @@ const LinkRepo: React.FC<Props> = ({ project }) => {
                     linked to{" "}
                     <a
                         className="text-blue-500 underline mr-6 ml-2"
-                        href={linkedRepo}>
+                        href={`https://github.com/${username}/${linkedRepo}`}>
                         {reponame}
                     </a>
                     <button onClick={DeleteLinkedRepo} className={cancelButton}>

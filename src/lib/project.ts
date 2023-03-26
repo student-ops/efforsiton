@@ -1,14 +1,7 @@
 import { serialize } from "v8"
 import { Webhook } from "../types/webhook"
 import prisma from "./prisma"
-
-export interface Project {
-    id: string
-    name: string
-    description: string | null
-    createdAt: string
-    userId: string
-}
+import { Project } from "../types/project"
 
 export interface ProjectMinimal {
     userName: string
@@ -64,30 +57,15 @@ export async function FetchMyProjects(username: string) {
         },
     })
 
-    const serializedProjects = projects.map((project) => ({
-        id: project.id,
-        name: project.name,
+    const serializedProjects: Project[] = projects.map((project) => ({
+        id: project.id!,
+        name: project.name!,
         description: project.description !== null ? project.description : null,
         createdAt: project.createdAt.toISOString(),
-        userId: project.userId,
+        userId: project.userId!,
+        linked: project.linked!,
     }))
-    // console.log(serializedProjects)
     return serializedProjects
-}
-
-export const FetchProjectsFromDtabase = async () => {
-    const array = await fetch("/api/myprojects", {
-        method: "POST",
-    })
-        .then((res) => res.json())
-        .then((projects) => {
-            const projectArray = projects.myprjects
-            return projectArray
-        })
-        .catch((err) => {
-            // must Implement error handling
-        })
-    return array
 }
 
 export const FetchProjectFromId = async (id: string) => {

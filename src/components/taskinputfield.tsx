@@ -50,6 +50,7 @@ const TaskInputField: React.FC<Props> = (setdummytask) => {
                     createdAt: new Date(),
                     acheived: false,
                     userId: "dummy",
+                    suggested: false,
                 }
                 setdummytask.setdummytask(dummyTask)
                 setName("")

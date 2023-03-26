@@ -9,7 +9,7 @@ interface Props {
     unacheivedtasks: Task[] | undefined | null
 }
 
-const TaskViwer: NextPage<Props> = ({ unacheivedtasks, acheivedtasks }) => {
+const TaskViwer: React.FC<Props> = ({ unacheivedtasks, acheivedtasks }) => {
     return (
         <>
             <div className="flex w-full h-full ">

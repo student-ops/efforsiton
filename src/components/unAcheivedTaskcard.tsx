@@ -1,13 +1,13 @@
 import React, { useContext } from "react"
 import { Task, TaskforFrontend } from "../types/project"
-import { SelectorContext } from "../pages/project/[id]"
+import { TaskviwerSelectorContext } from "../pages/project/[id]"
 
 interface Props {
     task: Task
 }
 
 const UnAcheivedTaskCard: React.FC<Props> = ({ task }) => {
-    const { selectedTasksId, setId } = useContext(SelectorContext)
+    const { selectedTasksId, setId } = useContext(TaskviwerSelectorContext)
     const isTaskSelected = selectedTasksId.includes(task.id)
     const clicked = () => {
         const updatedSelectedTaskIds = isTaskSelected

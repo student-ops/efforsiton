@@ -4,26 +4,11 @@ import { useState, useEffect } from "react"
 import { NextPage, GetStaticProps } from "next"
 import ProjectList from "../components/projectList"
 import { Project } from "../types/project"
+import { FetchProjectFromApi } from "../utils/project"
 
 type Repo = {
     id: number
     name: string
-}
-
-export const FetchProjectFromApi = async () => {
-    const array = await fetch("/api/myprojects", {
-        method: "POST",
-    })
-        .then((res) => res.json())
-        .then((projects) => {
-            const projectArray = projects.myprjects
-            return projectArray
-        })
-        .catch((err) => {
-            // must Implement error handling
-            return null
-        })
-    return array
 }
 
 const fetchRepos = (session: Session) => {
@@ -55,18 +40,18 @@ const Home: NextPage = () => {
     const userName = session?.user?.name
     const [repos, setRepos] = useState<Repo[]>([])
     const [myProjects, setMyProjects] = useState<Project[]>([])
-    const setproject = async () => {
-        const projects = await FetchProjectFromApi()
-        setMyProjects(projects!)
-    }
-    console.log(session?.user.accessToken)
-    // console.log(session?.user.image)
     useEffect(() => {
+        async function fetchData() {
+            const projects = await FetchProjectFromApi()
+            console.log(projects)
+            setMyProjects(projects!)
+        }
+
         if (status === "authenticated") {
             fetchRepos(session).then((data) => setRepos(data!))
-            setproject()
-        } else return
-    }, [session])
+            fetchData()
+        }
+    }, [session, status])
 
     if (status === "loading") {
         return <p>Hang on there...</p>
