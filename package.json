@@ -7,7 +7,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "dbpush": "npx prisma format && npx prisma migrate dev --name normal &&",
+        "dbpush": "npx prisma format && npx prisma migrate dev --name init",
         "start:migrate:prod": "npx prisma migrate deploy && npx prisma generate && npm run start"
     },
     "prisma": {
