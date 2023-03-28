@@ -12,7 +12,6 @@ COPY . .
 # RUN npm install -g npm@9.6.1 -y
 RUN npm install
 RUN npm run build
-RUN npm run dbpush
 
 # Make port 80 available to the world outside this container
 EXPOSE 3000
