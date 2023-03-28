@@ -50,14 +50,16 @@ export default function Head() {
                     <span className="ml-3 text-xl">Efforsition</span>
                 </Link>
                 <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
+                    <Link
+                        href="/playground"
+                        className="mr-5 hover:text-gray-900">
+                        playground
+                    </Link>
                     <Link href="/projects" className="mr-5 hover:text-gray-900">
                         Create
                     </Link>
                     <Link href="/about" className="mr-5 hover:text-gray-900">
                         About
-                    </Link>
-                    <Link href="/github" className="mr-5 hover:text-gray-900">
-                        Github
                     </Link>
                 </nav>
                 {status === "authenticated" ? (

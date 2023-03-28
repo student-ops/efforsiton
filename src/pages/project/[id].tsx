@@ -6,17 +6,23 @@ import TaskInputField from "../../components/taskinputfield"
 import TaskViwer from "../../components/tasksViwer"
 import { useEffect, useState, createContext } from "react"
 import LinkRepo from "../../components/linkRepo"
-import { PopUpComponent } from "../../components/tmp"
-import { Session } from "next-auth"
+import PopUpComponent from "../../components/suggestionPopup"
+import ProjectList from "../../components/projectList"
+import { FetchMyProjects } from "../../lib/project"
+import { getSession } from "next-auth/react"
 
 type Props = {
     project: Project
     myprojects: Project[]
 }
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
-        const projectId = params!.id as string
+        const session = await getSession(context)
+        // Now you can access the session data using the `session` object.
+
+        const projectId = context.params!.id as string
         const project = await FetchProjectFromId(projectId)
+        const myprojects = await FetchMyProjects(session?.user.name!)
 
         if (!project) {
             return {
@@ -26,7 +32,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
         return {
             props: {
-                project,
+                project: project,
+                myprojects: myprojects,
             },
         }
     } catch (error) {
@@ -76,7 +83,7 @@ const achieveTask = async (taskIds: string[]) => {
     }
 }
 
-const Projectpage: CustomNextPage<Props> = ({ project }) => {
+const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
     const [tasks, setTasks] = useState<Task[]>()
     const [dummytask, setdummytask] = useState<Task>()
     const [selectedTasksId, setId] = useState<string[]>([])
@@ -159,7 +166,10 @@ const Projectpage: CustomNextPage<Props> = ({ project }) => {
         <>
             {viewFlag && <PopUpComponent suggestions={suggetedTasks} />}
             <div className="flex h-secreen">
-                <div className="w-1/5">Your projects</div>
+                <div className="w-1/6 ">
+                    <div>Your projects</div>
+                    {/* <Projectsidebar projects={myprojects} /> */}
+                </div>
                 <div className="w-4/5">
                     <div className="w-full">
                         <div className="w-full flex justify-between">

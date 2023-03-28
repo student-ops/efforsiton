@@ -36,7 +36,7 @@ export const SuggestionTaskviwerSelectorContext =
         deleteSuggestions: () => {},
     })
 
-export const PopUpComponent = memo((props: Props) => {
+const PopUpComponent = (props: Props) => {
     const { suggestions } = props
     const [suggestionsstate, setSuggestionsstate] =
         React.useState<Task[]>(suggestions)
@@ -136,4 +136,6 @@ export const PopUpComponent = memo((props: Props) => {
             </div>
         </>
     )
-})
+}
+
+export default PopUpComponent

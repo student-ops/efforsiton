@@ -12,7 +12,7 @@ const SuggestionField: React.FC<Props> = ({ suggestions }) => {
                 Did you acheived these tasks ?
             </div>
             {suggestions.map((task: Task) => {
-                return <UnAcheivedTaskCard task={task} />
+                return <UnAcheivedTaskCard key={task.id} task={task} />
             })}
         </div>
     )

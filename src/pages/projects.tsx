@@ -32,16 +32,16 @@ const ProjectPage: CustomNextPage = () => {
     }, [])
 
     return (
-        <>
-            <div className="flex">
-                <div className="w-2/3">
-                    <ProjectList projects={myProjects} />
+        <div className="flex items-center flex-col w-full h-screen relative">
+            <div className="w-full lg:w-2/5 h-3/5">
+                <ProjectList projects={myProjects} />
+            </div>
+            <div className="flex justify-center w-full lg:w-2/5 h-1/5 mt-10">
+                <div className="h-96 w-full">
+                    <ProjectInputField promise={setproject} />
                 </div>
             </div>
-            <div className="flex justify-center  mt-4 w-2/3">
-                <ProjectInputField promise={setproject} />
-            </div>
-        </>
+        </div>
     )
 }
 

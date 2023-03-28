@@ -60,11 +60,11 @@ const Home: NextPage = () => {
     if (status === "authenticated") {
         return (
             <>
-                <div className="h-screen flex flex-wrap flex-row">
-                    <div className="md:w-1/2 flex flex-col">
+                <div className="h-screen flex justify-center flex-wrap flex-row mx-5">
+                    <div className="md:w-2/5 h-2/3 flex flex-col mx-5">
                         <ProjectList projects={myProjects} />
                     </div>
-                    <div className="md:w-1/2 flex flex-col">
+                    <div className="md:w-2/5 flex mx-5 flex-col">
                         <p className="text-blue-400">Signed in as {userName}</p>
                         {/* <NButton input="singout" onClick={() => signOut()} /> */}
 
@@ -79,8 +79,8 @@ const Home: NextPage = () => {
         )
     }
     return (
-        <>
-            <h1>
+        <div className="flex justify-center items-center">
+            <h1 className="text-xl w-1/2">
                 You are not signed in. Click{" "}
                 <button
                     className="text-blue-400"
@@ -89,7 +89,7 @@ const Home: NextPage = () => {
                 </button>{" "}
                 to login.
             </h1>
-        </>
+        </div>
     )
 }
 

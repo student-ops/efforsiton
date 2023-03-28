@@ -32,7 +32,6 @@ export default async function handler(
     if (req.method === "GET") {
         await FetchMyProjects(username!)
             .then((myprojects) => {
-                console.log("return value:" + myprojects)
                 res.status(200).json({ myprojects })
                 return
             })

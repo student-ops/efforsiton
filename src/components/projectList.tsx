@@ -10,17 +10,28 @@ const ProjectList: FC<Props> = ({ projects }) => {
     if (!projects || projects.length === 0) {
         return (
             <Link href="/create" className="text-blue-400">
-                you don't have any projects click here to create one
+                you don&apos;t have any projects click here to create one
             </Link>
         )
     }
 
     return (
-        <div className="w-full flex flex-col justify-center items-center">
+        <div className="w-full h-full flex flex-col justify-center items-center">
             <h1 className="text-xl font-bold p-4">Your Projects</h1>
-            {projects?.map((project: Project) => (
-                <ProjectComponent key={project.id} project={project} />
-            ))}
+            <div className="scroll-container">
+                {projects?.map((project: Project) => (
+                    <ProjectComponent key={project.id} project={project} />
+                ))}
+            </div>
+            <style jsx>{`
+                .scroll-container {
+                    max-height: calc(
+                        100vh - 5rem
+                    ); /* Adjust this value based on the height of the h1 and other elements */
+                    overflow-y: auto;
+                    width: 100%;
+                }
+            `}</style>
         </div>
     )
 }

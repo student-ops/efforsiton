@@ -12,8 +12,8 @@ export const SelectWebhookId = async (owner: string, repo_name: string) => {
 }
 export {}
 async function main() {
-    const webhook = await SelectWebhookId("student-ops", "efforsiton")
-    console.log(webhook.id)
+    // const webhook = await SelectWebhookId("student-ops", "efforsiton")
+    console.log("hell")
 }
 
 main()

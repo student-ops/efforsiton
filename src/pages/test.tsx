@@ -1,41 +1,36 @@
-import { NextPage } from "next"
-import React from "react"
-import SuggestionField from "../components/suggestionfield"
-import { Task } from "../types/project"
-import { PopUpComponent } from "../components/tmp"
-import { useState } from "react"
-const mytask: Task[] = [
-    {
-        id: "1",
-        belongsTo: "1",
-        name: "test",
-        description: null,
-        userId: "1",
-        createdAt: new Date(),
-        acheived: false,
-        parentId: "1",
-        suggested: true,
-    },
-]
+import React, { FC } from "react"
+import ReactMarkdown from "react-markdown"
+import { GetStaticProps } from "next"
+import fs from "fs"
+import path from "path"
+import { renderToString } from "react-dom/server"
+import "github-markdown-css/github-markdown.css"
 
-const Home: NextPage = () => {
-    const [viewFlag, setViewFlag] = useState<boolean>(false)
-    const props = { viewFlag: viewFlag, setViewFlag: setViewFlag }
+interface MyComponentProps {
+    content: string
+}
+
+const About: FC<MyComponentProps> = ({ content }) => {
+    const htmlContent = renderToString(<ReactMarkdown>{content}</ReactMarkdown>)
+
     return (
         <>
-            <button onClick={() => setViewFlag(!viewFlag)}>
-                Toggle PopUpComponent
-            </button>
-            {viewFlag && (
-                <PopUpComponent
-                    viewFlag={viewFlag}
-                    setViewFlag={setViewFlag}
-                    suggestions={mytask}
-                />
-            )}
-            <div></div>
+            <style jsx global>{`
+                @import "github-markdown-css/github-markdown.css";
+            `}</style>
+            <div
+                className="markdown-body"
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
+            />
         </>
     )
 }
 
-export default Home
+export const getStaticProps: GetStaticProps = async () => {
+    const filePath = path.join(process.cwd(), "README.md")
+    const content = fs.readFileSync(filePath, "utf8")
+
+    return { props: { content } }
+}
+
+export default About

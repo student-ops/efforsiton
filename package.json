@@ -7,11 +7,11 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "dbpush": "npx prisma format && npx prisma migrate dev --name normal",
-        "start:migrate:prod": "npx prisma migrate deploy && npx prsim generate && npm run dev"
+        "dbpush": "npx prisma format && npx prisma migrate dev --name normal &&",
+        "start:migrate:prod": "npx prisma format && npx prisma migrate dev --name normal && npx prisma generate && npm run start"
     },
     "prisma": {
-        "schema": "./prisma/schema.prisma"
+        "schema": "prisma/schema.prisma"
     },
     "dependencies": {
         "@next-auth/prisma-adapter": "^1.0.5",
@@ -39,14 +39,15 @@
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-icons": "^4.8.0",
+        "react-markdown": "^8.0.6",
         "remark": "^14.0.2",
         "remark-html": "^15.0.2",
         "tailwindcss": "^3.2.7",
         "ts-node": "^10.9.1",
         "typescript": "4.9.5",
-        "uuid": "^9.0.0"
-    },
-    "devDependencies": {
+        "uuid": "^9.0.0",
+        "@types/uuid": "^9.0.1",
         "openai": "^3.2.1"
-    }
+    },
+    "devDependencies": {}
 }
