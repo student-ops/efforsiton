@@ -7,6 +7,7 @@ WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 COPY . .
+RUN rm -r prisma/migrations
 
 # Install any needed packages specified in package.json
 RUN npm install -g npm@9.6.1 -y
