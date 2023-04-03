@@ -42,8 +42,23 @@ export const authOptions: NextAuthOptions = {
                     description:
                         "Thank you for joining our service!\nLet's begin this journey together!",
                 }
-                InsertProject(project)
+                const res = await InsertProject(project)
+                if (!res) {
+                    console.log("Error: Getting Started project can't created")
+                    return
+                } else {
+                    const ins = await prisma.user.update({
+                        where: {
+                            id: message.user.id,
+                        },
+                        data: {
+                            gettingstartedid: res?.id!,
+                        },
+                    })
+                    console.log(ins)
+                }
             }
+            return
         },
     },
 

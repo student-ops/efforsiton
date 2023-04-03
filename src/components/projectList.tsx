@@ -9,8 +9,9 @@ interface Props {
 const ProjectList: FC<Props> = ({ projects }) => {
     if (!projects || projects.length === 0) {
         return (
-            <Link href="/projects" className="text-blue-400">
-                you don&apos;t have any projects click here to create one
+            <Link href="/projects" className="text text-lg">
+                you don&apos;t have any projects click
+                <span className="text-blue-400"> here</span> or create at header
             </Link>
         )
     }

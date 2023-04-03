@@ -29,7 +29,7 @@ async function fectchUserId(userName: string) {
 export async function InsertProject(minim: ProjectMinimal) {
     const userid = await fectchUserId(minim.userName)
     let id = JSON.parse(JSON.stringify(userid))
-    await prisma.projects.create({
+    const res = await prisma.projects.create({
         data: {
             userId: id.id,
             name: minim.name,
@@ -37,7 +37,7 @@ export async function InsertProject(minim: ProjectMinimal) {
             description: minim.description ?? null,
         },
     })
-    return
+    return res
 }
 
 export async function DeleteProject(id: string) {
