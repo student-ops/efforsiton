@@ -2,6 +2,7 @@ import React, { memo, useEffect, createContext } from "react"
 import { RxCross1 } from "react-icons/rx"
 import SuggestionField from "./suggestionfield"
 import { Task } from "../types/project"
+import { cancelButton } from "../styles/templates"
 
 type Props = {
     suggestions: Task[]
@@ -53,6 +54,7 @@ const PopUpComponent = (props: Props) => {
         const tasksid = suggestions.map((task) => task.id)
         achieveTask(tasksid)
     }
+    const achiveSelected = async () => {}
 
     useEffect(() => {
         if (suggestions) setViewFlag(true)
@@ -120,10 +122,12 @@ const PopUpComponent = (props: Props) => {
                             <div
                                 id="button-field"
                                 className="flex  justify-between w-4/5 mt-auto mb-5">
-                                <button onClick={Deletesuggestions}>
+                                <button
+                                    onClick={Deletesuggestions}
+                                    className={cancelButton}>
                                     No at all
                                 </button>
-                                <button className="">
+                                <button className="" onClick={achiveSelected}>
                                     Achieve only selected
                                 </button>
                                 <button className="" onClick={achieveAll}>

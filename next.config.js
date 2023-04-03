@@ -1,15 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-}
-
-module.exports = {
+    basePath: "/efforsition",
     images: {
         domains: ["avatars.githubusercontent.com"],
-    },
-}
-module.exports = {
-    images: {
         remotePatterns: [
             {
                 protocol: "https",
