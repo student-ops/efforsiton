@@ -17,7 +17,7 @@ const ProjectList: FC<Props> = ({ projects }) => {
     }
 
     return (
-        <div className="w-full h-full flex flex-col justify-center items-center">
+        <div className="w-full h-full flex flex-col ">
             <h1 className="text-xl font-bold p-4">Your Projects</h1>
             <div className="scroll-container">
                 {projects?.map((project: Project) => (

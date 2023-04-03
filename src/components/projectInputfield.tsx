@@ -17,7 +17,7 @@ const ProjectInputField: React.FC<Props> = ({ promise }) => {
             name: name,
             description: description,
         }
-        fetch("/api/project", {
+        fetch("/efforsition/api/project", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

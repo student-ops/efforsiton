@@ -47,12 +47,10 @@ export const authOptions: NextAuthOptions = {
                     console.log("Error: Getting Started project can't created")
                     return
                 } else {
-                    const ins = await prisma.user.update({
-                        where: {
-                            id: message.user.id,
-                        },
+                    const ins = await prisma.playground.create({
                         data: {
-                            gettingstartedid: res?.id!,
+                            projectid: res.id,
+                            belongs: message.user.id,
                         },
                     })
                     console.log(ins)

@@ -22,9 +22,11 @@ export default async function handler(
         var payload = req.body as ProjectMinimal
         payload.userName = username
         if (payload !== null && payload !== undefined) {
-            await InsertProject(payload).then(() => {
+            const ins = await InsertProject(payload)
+            if (!ins) {
+                console.log(ins)
                 res.status(200).send("")
-            })
+            }
         } else {
             res.status(400).send("")
         }

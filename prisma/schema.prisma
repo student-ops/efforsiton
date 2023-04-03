@@ -41,10 +41,16 @@ model User {
   email         String?    @unique
   image         String?
   emailVerified DateTime?
-  gettingstartedid String?
   accounts      Account[]
   sessions      Session[]
   project       Projects[]
+  playgroud    Playground?
+}
+model Playground {
+  id          String    @id @default(cuid())
+  projectid String?
+  belongs     String @unique
+  belongsTo   User      @relation(fields: [belongs], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
