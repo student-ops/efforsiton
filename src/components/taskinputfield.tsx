@@ -31,7 +31,7 @@ const TaskInputField: React.FC<Props> = (setdummytask) => {
             belongsTo: projectid!,
             parentId: "null",
         }
-        fetch("/api/task", {
+        fetch("/efforsition/api/task", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

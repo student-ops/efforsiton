@@ -5,7 +5,7 @@ import ProjectInputField from "../components/projectInputfield"
 import { Project } from "../types/project"
 
 export const FetchProjectFromApi = async () => {
-    const array = await fetch("/api/myprojects", {
+    const array = await fetch("/efforsition/api/myprojects", {
         method: "GET",
     })
         .then((res) => res.json())

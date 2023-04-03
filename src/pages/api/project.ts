@@ -19,17 +19,17 @@ export default async function handler(
     const username = session.user.name!
 
     if (req.method === "POST") {
+        console.log("POST")
         var payload = req.body as ProjectMinimal
         payload.userName = username
-        if (payload !== null && payload !== undefined) {
+        if (payload && payload.name && payload.description) {
             const ins = await InsertProject(payload)
-            if (!ins) {
-                console.log(ins)
-                res.status(200).send("")
-            }
+            console.log(ins)
+            res.status(200).json({ message: "Success" })
         } else {
             res.status(400).send("")
         }
+        return
     }
     if (req.method === "GET") {
         await FetchMyProjects(username!)

@@ -2,6 +2,7 @@
 const nextConfig = {
     reactStrictMode: true,
     basePath: "/efforsition",
+    assetPrefix: "/efforsition",
     images: {
         domains: ["avatars.githubusercontent.com"],
         remotePatterns: [

@@ -82,7 +82,7 @@ const LinkRepo: React.FC<Props> = ({ project }) => {
     const handleLinkRepo = () => {
         // console.log("Linking repo:", selectedRepoUrl)
         // Call your API to link the repo here
-        const url = `/api/linkRepo?projectid=${project.id}&linkTo=${selectedRepoUrl}`
+        const url = `/efforsition/api/linkRepo?projectid=${project.id}&linkTo=${selectedRepoUrl}`
         fetch(url, {
             method: "POST",
         })
@@ -90,7 +90,7 @@ const LinkRepo: React.FC<Props> = ({ project }) => {
         return null
     }
     const DeleteLinkedRepo = () => {
-        const url = `/api/linkRepo?projectid=${project.id}`
+        const url = `/efforsition/api/linkRepo?projectid=${project.id}`
         fetch(url, {
             method: "DELETE",
         })

@@ -15,7 +15,7 @@ function MyApp({
     pageProps: { session, ...pageProps },
 }: CustomAppProps) {
     return (
-        <SessionProvider session={session} basePath="efforsition/api/auth">
+        <SessionProvider session={session} basePath="/efforsition/api/auth">
             <Layout>
                 {Component.requireAuth ? (
                     <AuthGuard>
