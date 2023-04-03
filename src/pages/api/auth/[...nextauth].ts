@@ -2,9 +2,10 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import { PrismaClient } from "@prisma/client"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { getMaxAge } from "next/dist/server/image-optimizer"
+import { InsertProject, ProjectMinimal } from "../../../lib/project"
 
 const prisma = new PrismaClient()
+const basePath = "/efforsition"
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -32,6 +33,20 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt",
         maxAge: 60 * 60 * 24 * 14, // 14 days
     },
+    events: {
+        signIn: async (message) => {
+            if (message.isNewUser) {
+                const project: ProjectMinimal = {
+                    userName: message.user.name!,
+                    name: "Getting Started",
+                    description:
+                        "Thank you for joining our service!\nLet's begin this journey together!",
+                }
+                InsertProject(project)
+            }
+        },
+    },
+
     adapter: PrismaAdapter(prisma),
 }
 
