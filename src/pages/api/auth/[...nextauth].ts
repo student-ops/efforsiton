@@ -3,9 +3,12 @@ import GithubProvider from "next-auth/providers/github"
 import { PrismaClient } from "@prisma/client"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { InsertProject, ProjectMinimal } from "../../../lib/project"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const prisma = new PrismaClient()
-const basePath = "/efforsition"
+const basePath = process.env.BASE_PATH
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -34,10 +37,10 @@ export const authOptions: NextAuthOptions = {
         maxAge: 60 * 60 * 24 * 14, // 14 days
     },
     pages: {
-        signIn: `${basePath}/api/auth/signin`,
-        signOut: `${basePath}/api/auth/signout`,
-        error: `${basePath}/api/auth/error`,
-        verifyRequest: `${basePath}/api/auth/verify-request`,
+        signIn: `/api/auth/signin`,
+        signOut: `/api/auth/signout`,
+        error: `/api/auth/error`,
+        verifyRequest: `/api/auth/verify-request`,
     },
     events: {
         signIn: async (message) => {
