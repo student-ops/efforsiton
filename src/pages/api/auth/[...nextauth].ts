@@ -33,6 +33,12 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt",
         maxAge: 60 * 60 * 24 * 14, // 14 days
     },
+    pages: {
+        signIn: `${basePath}/api/auth/signin`,
+        signOut: `${basePath}/api/auth/signout`,
+        error: `${basePath}/api/auth/error`,
+        verifyRequest: `${basePath}/api/auth/verify-request`,
+    },
     events: {
         signIn: async (message) => {
             if (message.isNewUser) {
