@@ -20,27 +20,27 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
-    callbacks: {
-        async jwt({ token, account }) {
-            if (account) {
-                token.accessToken = account?.access_token
-            }
-            return token
-        },
-        async session({ session, token }) {
-            session.user.accessToken = token.accessToken
-            return session
-        },
-    },
+    // callbacks: {
+    //     async jwt({ token, account }) {
+    //         if (account) {
+    //             token.accessToken = account?.access_token
+    //         }
+    //         return token
+    //     },
+    //     async session({ session, token }) {
+    //         session.user.accessToken = token.accessToken
+    //         return session
+    //     },
+    // },
     session: {
         strategy: "jwt",
         maxAge: 60 * 60 * 24 * 14, // 14 days
     },
     pages: {
-        signIn: `/api/auth/signin`,
-        signOut: `/api/auth/signout`,
-        error: `/api/auth/error`,
-        verifyRequest: `/api/auth/verify-request`,
+        signIn: `/efforsition/api/auth/signin`,
+        signOut: `/efforsition/api/auth/signout`,
+        error: `/efforsition/api/auth/error`,
+        verifyRequest: `/efforsition/api/auth/verify-request`,
     },
     events: {
         signIn: async (message) => {
