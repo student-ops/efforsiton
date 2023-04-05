@@ -20,27 +20,16 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
-    // callbacks: {
-    //     async jwt({ token, account }) {
-    //         if (account) {
-    //             token.accessToken = account?.access_token
-    //         }
-    //         return token
-    //     },
-    //     async session({ session, token }) {
-    //         session.user.accessToken = token.accessToken
-    //         return session
-    //     },
-    // },
     session: {
         strategy: "jwt",
         maxAge: 60 * 60 * 24 * 14, // 14 days
     },
-    pages: {
-        signIn: `/efforsition/api/auth/signin`,
-        signOut: `/efforsition/api/auth/signout`,
-        error: `/efforsition/api/auth/error`,
-        verifyRequest: `/efforsition/api/auth/verify-request`,
+    callbacks: {
+        signIn: async (params) => {
+            const { user, account, profile } = params
+            // 認証が成功した場合、正しいコールバックURLを返します。
+            return `${basePath}/efforsition`
+        },
     },
     events: {
         signIn: async (message) => {
