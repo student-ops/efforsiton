@@ -16,7 +16,7 @@ interface SuggestionSelectorContextValue {
 }
 
 const achieveTask = async (taskIds: string[]) => {
-    const response = await fetch("/efforsition/api/acheiveTask", {
+    const response = await fetch("/api/acheiveTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

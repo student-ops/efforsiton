@@ -54,12 +54,9 @@ export const TaskviwerSelectorContext = createContext<SelectorContextValue>({
 })
 
 const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
-    const taskarray: Task[] = await fetch(
-        `/efforsition/api/task?projectid=${projectid}`,
-        {
-            method: "GET",
-        }
-    )
+    const taskarray: Task[] = await fetch(`/api/task?projectid=${projectid}`, {
+        method: "GET",
+    })
         .then((res) => res.json())
         .then((tasks) => {
             const taskArray = tasks.tasks
@@ -73,7 +70,7 @@ const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
 }
 
 const achieveTask = async (taskIds: string[]) => {
-    const response = await fetch("/efforsition/apiacheiveTask", {
+    const response = await fetch("/api/acheiveTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

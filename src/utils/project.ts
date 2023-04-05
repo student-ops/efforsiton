@@ -1,6 +1,6 @@
 import { Project } from "../types/project"
 export const FetchProjectFromApi = async () => {
-    const res = await fetch("/efforsition/api/project", {
+    const res = await fetch("/api/project", {
         method: "GET",
     })
     const projects = await res.json()
