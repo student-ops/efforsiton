@@ -15,7 +15,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     }
     await AchieveTask(taskIds)
         .then(() => {
-            res.status(200).send("accepted")
+            res.status(200).send(true)
         })
         .catch((err: Error) => {
             res.status(400).send(err)
