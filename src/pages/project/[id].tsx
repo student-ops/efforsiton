@@ -70,7 +70,7 @@ const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
 }
 
 const achieveTask = async (taskIds: string[]) => {
-    const response = await fetch("/efforsition/apiacheiveTask", {
+    const response = await fetch("/api/acheiveTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

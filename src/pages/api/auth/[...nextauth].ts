@@ -24,13 +24,6 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt",
         maxAge: 60 * 60 * 24 * 14, // 14 days
     },
-    callbacks: {
-        signIn: async (params) => {
-            const { user, account, profile } = params
-            // 認証が成功した場合、正しいコールバックURLを返します。
-            return `${basePath}/efforsition`
-        },
-    },
     events: {
         signIn: async (message) => {
             if (message.isNewUser) {
