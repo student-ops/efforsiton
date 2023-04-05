@@ -4,12 +4,13 @@ import { CustomNextPage } from "../../types/custom-next-page"
 import { FetchProjectFromId } from "../../lib/project"
 import TaskInputField from "../../components/taskinputfield"
 import TaskViwer from "../../components/tasksViwer"
-import { useEffect, useState, createContext } from "react"
+import { useEffect, useState } from "react"
 import LinkRepo from "../../components/linkRepo"
 import PopUpComponent from "../../components/suggestionPopup"
-import ProjectList from "../../components/projectList"
 import { FetchMyProjects } from "../../lib/project"
+import { TaskviwerSelectorContext } from "../../components/taskSelectContext"
 import { getSession } from "next-auth/react"
+import { AchieveTaskFromApi } from "../../lib/taskClinet"
 
 type Props = {
     project: Project
@@ -43,15 +44,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 }
-
-interface SelectorContextValue {
-    selectedTasksId: string[]
-    setId: (value: string[]) => void
-}
-export const TaskviwerSelectorContext = createContext<SelectorContextValue>({
-    selectedTasksId: [],
-    setId: () => {},
-})
 
 const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
     const taskarray: Task[] = await fetch(`/api/task?projectid=${projectid}`, {
@@ -129,7 +121,7 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
     }, [project.id])
 
     const markSelectedTasksAsAchieved = () => {
-        achieveTask(selectedTasksId)
+        AchieveTaskFromApi(selectedTasksId)
             .then(() => {
                 const { updatedAchievedTasks, updatedUnachievedTasks } =
                     unacheivedTasks.reduce(

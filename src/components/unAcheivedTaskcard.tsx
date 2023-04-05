@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { Task, TaskforFrontend } from "../types/project"
-import { TaskviwerSelectorContext } from "../pages/project/[id]"
+import { TaskviwerSelectorContext } from "./taskSelectContext"
 
 interface Props {
     task: Task
@@ -14,6 +14,7 @@ const UnAcheivedTaskCard: React.FC<Props> = ({ task }) => {
             ? selectedTasksId.filter((id) => id !== task.id)
             : [...selectedTasksId, task.id]
         setId(updatedSelectedTaskIds)
+        console.log(task.id)
     }
 
     const selectedClassName = isTaskSelected

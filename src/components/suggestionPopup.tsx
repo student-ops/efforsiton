@@ -3,58 +3,40 @@ import { RxCross1 } from "react-icons/rx"
 import SuggestionField from "./suggestionfield"
 import { Task } from "../types/project"
 import { cancelButton } from "../styles/templates"
+import { TaskviwerSelectorContext } from "./taskSelectContext"
+import { AchieveTaskFromApi, DeleteSuggestion } from "../lib/taskClinet"
 
 type Props = {
     suggestions: Task[]
 }
-
-interface SuggestionSelectorContextValue {
-    selectedTasksId: string[]
-    setId: (value: string[]) => void
-    achiveTask: (taskId: string) => void
-    deleteSuggestions: (taskId: string) => void
-}
-
-const achieveTask = async (taskIds: string[]) => {
-    const response = await fetch("/api/acheiveTask", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ taskIds }),
-    })
-
-    if (!response.ok) {
-        console.log("Failed to achieve tasks")
-    }
-}
-
-export const SuggestionTaskviwerSelectorContext =
-    createContext<SuggestionSelectorContextValue>({
-        selectedTasksId: [],
-        setId: () => {},
-        achiveTask: () => {},
-        deleteSuggestions: () => {},
-    })
 
 const PopUpComponent = (props: Props) => {
     const { suggestions } = props
     const [suggestionsstate, setSuggestionsstate] =
         React.useState<Task[]>(suggestions)
     const [viewFlag, setViewFlag] = React.useState<boolean>(false)
-    const [selectedTasksId, setSelectedTasksId] = React.useState<string[]>([])
-    const value = {
-        selectedTasksId,
-        setSelectedTasksId,
-        achieveTask,
-        setSuggestionsstate,
-    }
+    const [selectedTasksId, setId] = React.useState<string[]>([])
+    const value = { selectedTasksId, setId }
     var tasksId: string[] = []
-    const achieveAll = () => {
+    const achieveAll = async () => {
         const tasksid = suggestions.map((task) => task.id)
-        achieveTask(tasksid)
+        await AchieveTaskFromApi(tasksid)
+        setViewFlag(false)
     }
-    const achiveSelected = async () => {}
+    const achiveSelected = async () => {
+        console.log(selectedTasksId)
+        await AchieveTaskFromApi(selectedTasksId)
+        const unselectedTaskIds: string[] = suggestions
+            .filter((task) => !selectedTasksId.includes(task.id))
+            .map((task) => task.id)
+        await DeleteSuggestion(unselectedTaskIds)
+
+        setViewFlag(false)
+    }
+    const Deletesuggestions = () => {
+        DeleteSuggestion(tasksId)
+        setViewFlag(false)
+    }
 
     useEffect(() => {
         if (suggestions) setViewFlag(true)
@@ -81,9 +63,6 @@ const PopUpComponent = (props: Props) => {
             unRegisterBackgroundFixed()
         }
     }, [viewFlag])
-    const Deletesuggestions = () => {
-        setViewFlag(false)
-    }
 
     // 枠外クリック用関数
     const onClickBackground = () => {}
@@ -118,7 +97,11 @@ const PopUpComponent = (props: Props) => {
                         className="flex h-full w-full bg-white"
                         onClick={onClickCard}>
                         <div className="flex h-full w-full flex-col items-center">
-                            <SuggestionField suggestions={suggestionsstate} />
+                            <TaskviwerSelectorContext.Provider value={value}>
+                                <SuggestionField
+                                    suggestions={suggestionsstate}
+                                />
+                            </TaskviwerSelectorContext.Provider>
                             <div
                                 id="button-field"
                                 className="flex  justify-between w-4/5 mt-auto mb-5">
