@@ -13,6 +13,7 @@ type Repo = {
 
 const fetchRepos = (session: Session) => {
     // Return a rejected promise if the access token is not available
+    console.log(session)
     if (!session?.user.accessToken) {
         return Promise.reject("Access token not found.")
     }

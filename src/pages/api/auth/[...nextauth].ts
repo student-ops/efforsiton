@@ -24,6 +24,18 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt",
         maxAge: 60 * 60 * 24 * 14, // 14 days
     },
+    callbacks: {
+        async jwt({ token, account }) {
+            if (account) {
+                token.accessToken = account?.access_token
+            }
+            return token
+        },
+        async session({ session, token }) {
+            session.user.accessToken = token.accessToken
+            return session
+        },
+    },
     events: {
         signIn: async (message) => {
             if (message.isNewUser) {
