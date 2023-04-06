@@ -7,6 +7,8 @@ WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 COPY . .
+RUN rm -r .env
+RUN mv .env.docker .env
 RUN rm -r prisma/migrations
 
 # Install any needed packages specified in package.json

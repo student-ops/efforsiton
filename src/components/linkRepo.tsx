@@ -74,6 +74,7 @@ const LinkRepo: React.FC<Props> = ({ project }) => {
                 console.error("Failed to fetch repos:", error)
             })
     }, [session])
+    useEffect(() => {}, [linkedRepo])
 
     const handleRepoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedRepoUrl(event.target.value)
@@ -142,7 +143,7 @@ const LinkRepo: React.FC<Props> = ({ project }) => {
                     linked to{" "}
                     <a
                         className="text-blue-500 underline mr-6 ml-2"
-                        href={`https://github.com/${username}/${linkedRepo}`}>
+                        href={`https://github.com/${username}/${reponame}`}>
                         {reponame}
                     </a>
                     <button onClick={DeleteLinkedRepo} className={cancelButton}>
