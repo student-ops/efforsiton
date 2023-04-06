@@ -64,7 +64,7 @@ export const authOptions: NextAuthOptions = {
                     belongsTo: res.id,
                     parentId: null,
                     name: "Getting Started",
-                    description: "Welcome to our service!",
+                    description: "let's linkrepo top left",
                 }
                 const taskres = await InsertTask(task)
                 if (!taskres) {
