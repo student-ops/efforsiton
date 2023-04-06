@@ -4,6 +4,8 @@ import { PrismaClient } from "@prisma/client"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { InsertProject, ProjectMinimal } from "../../../lib/project"
 import dotenv from "dotenv"
+import { TaskForInsert } from "../../../types/project"
+import { InsertTask } from "../../../lib/task"
 
 dotenv.config()
 
@@ -58,7 +60,21 @@ export const authOptions: NextAuthOptions = {
                     })
                     console.log(ins)
                 }
+                const task: TaskForInsert = {
+                    belongsTo: res.id,
+                    parentId: null,
+                    name: "Getting Started",
+                    description: "Welcome to our service!",
+                }
+                const taskres = await InsertTask(task)
+                if (!taskres) {
+                    console.log("Error: Getting Started task can't created")
+                    return
+                } else {
+                    console.log(taskres)
+                }
             }
+
             return
         },
     },
