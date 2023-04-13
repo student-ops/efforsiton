@@ -72,7 +72,7 @@ const TaskInputField: React.FC<Props> = (setdummytask) => {
                 <input
                     className="title rounded bg-gray-100 border border-gray-300 p-2 mb-4 outline-none"
                     spellCheck="false"
-                    placeholder="Taskname"
+                    placeholder="TaskName"
                     type="text"
                     value={name}
                     onChange={(e) => {

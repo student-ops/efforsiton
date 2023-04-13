@@ -61,20 +61,6 @@ const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
     return taskarray
 }
 
-const achieveTask = async (taskIds: string[]) => {
-    const response = await fetch("/api/acheiveTask", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ taskIds }),
-    })
-
-    if (!response.ok) {
-        console.log("Failed to achieve tasks")
-    }
-}
-
 const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
     const [tasks, setTasks] = useState<Task[]>()
     const [dummytask, setdummytask] = useState<Task>()
@@ -84,6 +70,13 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
     const [suggetedTasks, setSuggetedTasks] = useState<Task[]>([])
     const [viewFlag, setViewFlag] = useState<boolean>(false)
     const value = { selectedTasksId, setId }
+    type SugestValue = {
+        tasks?: Task[]
+        suggetedTasks: Task[]
+    }
+
+    const sugestvalue: SugestValue = { tasks, suggetedTasks }
+
     const fetchTasks = async () => {
         const taskArray = await fetchTasksFromApi(project.id)
         setTasks(taskArray)
@@ -123,32 +116,17 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
     const markSelectedTasksAsAchieved = () => {
         AchieveTaskFromApi(selectedTasksId)
             .then(() => {
-                const { updatedAchievedTasks, updatedUnachievedTasks } =
-                    unacheivedTasks.reduce(
-                        (
-                            acc: {
-                                updatedAchievedTasks: Task[]
-                                updatedUnachievedTasks: Task[]
-                            },
-                            task: Task
-                        ) => {
-                            if (selectedTasksId.includes(task.id)) {
-                                acc.updatedAchievedTasks.push(task)
-                            } else {
-                                acc.updatedUnachievedTasks.push(task)
-                            }
-                            return acc
-                        },
-                        {
-                            updatedAchievedTasks: [...acheivedTasks],
-                            updatedUnachievedTasks: [], // 空の配列を初期値として割り当てる
-                        }
-                    )
-
-                setAcheivedTasks(updatedAchievedTasks)
-                setUnacheivedTasks(updatedUnachievedTasks)
+                const updatedTasks = tasks?.map((task) => {
+                    if (selectedTasksId.includes(task.id)) {
+                        return { ...task, acheived: true }
+                    } else {
+                        return task
+                    }
+                })
+                setTasks(updatedTasks)
                 setId([])
             })
+
             .catch((error) => {
                 console.error("Failed to achieve tasks:", error.message)
             })
@@ -156,7 +134,14 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
 
     return (
         <>
-            {viewFlag && <PopUpComponent suggestions={suggetedTasks} />}
+            {viewFlag && (
+                <PopUpComponent
+                    tasks={tasks!}
+                    suggestions={suggetedTasks}
+                    setTasks={setTasks}
+                />
+            )}
+
             <div className="flex h-secreen">
                 <div className="w-1/6 ">
                     <div>Your projects</div>
@@ -189,7 +174,7 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
                                 delete
                             </button>
                             <button
-                                className="text-gray-200 inline-flex float-right items-center bg-green-400 border-0 py-1 px-3 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0"
+                                className="text-white inline-flex float-right shadow items-center bg-green-400 border-0 py-1 px-3 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0"
                                 onClick={markSelectedTasksAsAchieved}>
                                 acheive
                             </button>

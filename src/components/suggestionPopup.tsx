@@ -8,10 +8,11 @@ import { AchieveTaskFromApi, DeleteSuggestion } from "../lib/taskClinet"
 
 type Props = {
     suggestions: Task[]
+    tasks: Task[]
+    setTasks: React.Dispatch<React.SetStateAction<Task[] | undefined>>
 }
 
-const PopUpComponent = (props: Props) => {
-    const { suggestions } = props
+const PopUpComponent = ({ suggestions, setTasks, tasks }: Props) => {
     const [suggestionsstate, setSuggestionsstate] =
         React.useState<Task[]>(suggestions)
     const [viewFlag, setViewFlag] = React.useState<boolean>(false)
@@ -19,13 +20,29 @@ const PopUpComponent = (props: Props) => {
     const value = { selectedTasksId, setId }
     var tasksId: string[] = []
     const achieveAll = async () => {
-        const tasksid = suggestions.map((task) => task.id)
+        const tasksid = suggestions.map((task) => {
+            const newtasks = tasks.map((t) => {
+                if (task.id === t.id) {
+                    t.acheived = true
+                }
+                return t
+            })
+            setTasks(newtasks)
+            return task.id
+        })
         await AchieveTaskFromApi(tasksid)
         setViewFlag(false)
     }
     const achiveSelected = async () => {
         console.log(selectedTasksId)
         await AchieveTaskFromApi(selectedTasksId)
+        const newtask = tasks.map((task) => {
+            if (selectedTasksId.includes(task.id)) {
+                task.acheived = true
+            }
+            return task
+        })
+        setTasks(newtask)
         const unselectedTaskIds: string[] = suggestions
             .filter((task) => !selectedTasksId.includes(task.id))
             .map((task) => task.id)
@@ -113,7 +130,9 @@ const PopUpComponent = (props: Props) => {
                                 <button className="" onClick={achiveSelected}>
                                     Achieve only selected
                                 </button>
-                                <button className="" onClick={achieveAll}>
+                                <button
+                                    className="text-white inline-flex float-right shadow  items-center bg-green-400 border-0 py-1 px-4 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0"
+                                    onClick={achieveAll}>
                                     Yes all!
                                 </button>
                             </div>
