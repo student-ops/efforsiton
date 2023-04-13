@@ -19,7 +19,6 @@ type Props = {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
         const session = await getSession(context)
-        // Now you can access the session data using the `session` object.
 
         const projectId = context.params!.id as string
         const project = await FetchProjectFromId(projectId)
