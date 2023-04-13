@@ -54,9 +54,7 @@ const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
             const taskArray = tasks.tasks
             return taskArray
         })
-        .catch((err) => {
-            // must Implement error handling
-        })
+        .catch((err) => {})
 
     return taskarray
 }
