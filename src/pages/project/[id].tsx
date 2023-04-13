@@ -145,7 +145,7 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
             <div className="flex h-secreen">
                 <div className="w-1/6 ">
                     <div>Your projects</div>
-                    {/* <Projectsidebar projects={myprojects } /> */}
+                    {/* <Projectsidebar projects={myprojects} />*/}
                 </div>
                 <div className="w-4/5">
                     <div className="w-full">
