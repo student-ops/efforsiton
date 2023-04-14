@@ -164,7 +164,13 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
 
     return (
         <>
-            {viewFlag && <PopUpComponent suggestions={suggetedTasks} />}
+            {viewFlag && (
+                <PopUpComponent
+                    suggestions={suggetedTasks}
+                    tasks={tasks!}
+                    setTasks={setTasks}
+                />
+            )}
             <div className="flex h-secreen">
                 <div className="w-1/6 ">
                     <div>Your projects</div>
