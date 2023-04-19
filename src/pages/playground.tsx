@@ -1,7 +1,5 @@
 import { Project, Task } from "../types/project"
-import { useSession } from "next-auth/react"
 import { GetServerSideProps, NextPage } from "next"
-import { CustomNextPage } from "../types/custom-next-page"
 import { FetchProjectFromId } from "../lib/project"
 import TaskInputField from "../components/taskinputfield"
 import TaskViwer from "../components/tasksViwer"
