@@ -73,6 +73,12 @@ export const authOptions: NextAuthOptions = {
                 } else {
                     console.log(taskres)
                 }
+                await prisma.playground.create({
+                    data: {
+                        projectid: res.id,
+                        belongs: message.user.id,
+                    },
+                })
             }
 
             return

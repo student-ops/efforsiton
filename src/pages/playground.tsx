@@ -1,28 +1,39 @@
 import { Project, Task } from "../types/project"
-import { GetServerSideProps } from "next"
+import { useSession } from "next-auth/react"
+import { GetServerSideProps, NextPage } from "next"
 import { CustomNextPage } from "../types/custom-next-page"
 import { FetchProjectFromId } from "../lib/project"
 import TaskInputField from "../components/taskinputfield"
 import TaskViwer from "../components/tasksViwer"
-import { useEffect, useState, createContext } from "react"
+import { useEffect, useState } from "react"
 import LinkRepo from "../components/linkRepo"
 import PopUpComponent from "../components/suggestionPopup"
-import ProjectList from "../components/projectList"
-import { FetchMyProjects } from "../lib/project"
+import { FetchPlayground } from "../lib/project"
+import { TaskviwerSelectorContext } from "../components/taskSelectContext"
 import { getSession } from "next-auth/react"
+import { AchieveTaskFromApi } from "../lib/taskClinet"
 
 type Props = {
     project: Project
-    myprojects: Project[]
 }
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (
+    context
+) => {
     try {
         const session = await getSession(context)
-        // Now you can access the session data using the `session` object.
 
-        const projectId = context.params!.id as string
-        const project = await FetchProjectFromId(projectId)
-        const myprojects = await FetchMyProjects(session?.user.name!)
+        if (!session) {
+            return {
+                redirect: {
+                    destination: "/",
+                    permanent: false,
+                },
+            }
+        }
+
+        const projectId = await FetchPlayground(session?.user.name!)
+        console.log(projectId)
+        const project = await FetchProjectFromId(projectId!)
 
         if (!project) {
             return {
@@ -33,7 +44,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return {
             props: {
                 project: project,
-                myprojects: myprojects,
             },
         }
     } catch (error) {
@@ -43,16 +53,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 }
-
-interface SelectorContextValue {
-    selectedTasksId: string[]
-    setId: (value: string[]) => void
-}
-export const TaskviwerSelectorContext = createContext<SelectorContextValue>({
-    selectedTasksId: [],
-    setId: () => {},
-})
-
 const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
     const taskarray: Task[] = await fetch(`/api/task?projectid=${projectid}`, {
         method: "GET",
@@ -62,28 +62,12 @@ const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
             const taskArray = tasks.tasks
             return taskArray
         })
-        .catch((err) => {
-            // must Implement error handling
-        })
+        .catch((err) => {})
 
     return taskarray
 }
 
-const achieveTask = async (taskIds: string[]) => {
-    const response = await fetch("/api/acheiveTask", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ taskIds }),
-    })
-
-    if (!response.ok) {
-        console.log("Failed to achieve tasks")
-    }
-}
-
-const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
+const Projectpage: NextPage<Props> = ({ project }) => {
     const [tasks, setTasks] = useState<Task[]>()
     const [dummytask, setdummytask] = useState<Task>()
     const [selectedTasksId, setId] = useState<string[]>([])
@@ -92,6 +76,13 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
     const [suggetedTasks, setSuggetedTasks] = useState<Task[]>([])
     const [viewFlag, setViewFlag] = useState<boolean>(false)
     const value = { selectedTasksId, setId }
+    type SugestValue = {
+        tasks?: Task[]
+        suggetedTasks: Task[]
+    }
+
+    const sugestvalue: SugestValue = { tasks, suggetedTasks }
+
     const fetchTasks = async () => {
         const taskArray = await fetchTasksFromApi(project.id)
         setTasks(taskArray)
@@ -129,34 +120,19 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
     }, [project.id])
 
     const markSelectedTasksAsAchieved = () => {
-        achieveTask(selectedTasksId)
+        AchieveTaskFromApi(selectedTasksId)
             .then(() => {
-                const { updatedAchievedTasks, updatedUnachievedTasks } =
-                    unacheivedTasks.reduce(
-                        (
-                            acc: {
-                                updatedAchievedTasks: Task[]
-                                updatedUnachievedTasks: Task[]
-                            },
-                            task: Task
-                        ) => {
-                            if (selectedTasksId.includes(task.id)) {
-                                acc.updatedAchievedTasks.push(task)
-                            } else {
-                                acc.updatedUnachievedTasks.push(task)
-                            }
-                            return acc
-                        },
-                        {
-                            updatedAchievedTasks: [...acheivedTasks],
-                            updatedUnachievedTasks: [], // 空の配列を初期値として割り当てる
-                        }
-                    )
-
-                setAcheivedTasks(updatedAchievedTasks)
-                setUnacheivedTasks(updatedUnachievedTasks)
+                const updatedTasks = tasks?.map((task) => {
+                    if (selectedTasksId.includes(task.id)) {
+                        return { ...task, acheived: true }
+                    } else {
+                        return task
+                    }
+                })
+                setTasks(updatedTasks)
                 setId([])
             })
+
             .catch((error) => {
                 console.error("Failed to achieve tasks:", error.message)
             })
@@ -166,15 +142,16 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
         <>
             {viewFlag && (
                 <PopUpComponent
-                    suggestions={suggetedTasks}
                     tasks={tasks!}
+                    suggestions={suggetedTasks}
                     setTasks={setTasks}
                 />
             )}
+
             <div className="flex h-secreen">
                 <div className="w-1/6 ">
                     <div>Your projects</div>
-                    {/* <Projectsidebar projects={myprojects} /> */}
+                    {/* <Projectsidebar projects={myprojects} />*/}
                 </div>
                 <div className="w-4/5">
                     <div className="w-full">
@@ -203,14 +180,17 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
                                 delete
                             </button>
                             <button
-                                className="text-gray-200 inline-flex float-right items-center bg-green-400 border-0 py-1 px-3 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0"
+                                className="text-white inline-flex float-right shadow items-center bg-green-400 border-0 py-1 px-3 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0"
                                 onClick={markSelectedTasksAsAchieved}>
                                 acheive
                             </button>
                         </div>
                     </div>
                     <div className="w-full">
-                        <TaskInputField setdummytask={setdummytask} />
+                        <TaskInputField
+                            setdummytask={setdummytask}
+                            projectid={project.id}
+                        />
                     </div>
                 </div>
             </div>
@@ -219,4 +199,3 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
 }
 
 export default Projectpage
-Projectpage.requireAuth = true

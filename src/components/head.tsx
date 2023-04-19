@@ -53,7 +53,7 @@ export default function Head() {
                     <Link
                         href="/playground"
                         className="mr-5 hover:text-gray-900">
-                        playground
+                        Playground
                     </Link>
                     <Link href="/projects" className="mr-5 hover:text-gray-900">
                         Create

@@ -7,17 +7,11 @@ import { smallButton, cancelButton } from "../styles/templates"
 
 type Props = {
     setdummytask: React.Dispatch<React.SetStateAction<Task | undefined>>
+    projectid: string
 }
-const TaskInputField: React.FC<Props> = (setdummytask) => {
+const TaskInputField: React.FC<Props> = ({ setdummytask, projectid }) => {
     const [name, setName] = useState("")
     const [description, setDesc] = useState("")
-    const router = useRouter()
-    const projectid = router.query.id as string
-    // 存在しないidを受け取った時のエラー処理
-    if (typeof projectid !== "string") {
-        console.error()
-        router.push("/error")
-    }
 
     const SubmitTask = (event: FormEvent<HTMLFormElement>) => {
         event?.preventDefault()
@@ -52,7 +46,7 @@ const TaskInputField: React.FC<Props> = (setdummytask) => {
                     userId: "dummy",
                     suggested: false,
                 }
-                setdummytask.setdummytask(dummyTask)
+                setdummytask(dummyTask)
                 setName("")
                 setDesc("")
             })

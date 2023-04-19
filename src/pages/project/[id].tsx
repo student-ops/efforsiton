@@ -14,7 +14,6 @@ import { AchieveTaskFromApi } from "../../lib/taskClinet"
 
 type Props = {
     project: Project
-    myprojects: Project[]
 }
 export const getServerSideProps: GetServerSideProps = async (context) => {
     try {
@@ -58,7 +57,7 @@ const fetchTasksFromApi = async (projectid: string): Promise<Task[]> => {
     return taskarray
 }
 
-const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
+const Projectpage: CustomNextPage<Props> = ({ project }) => {
     const [tasks, setTasks] = useState<Task[]>()
     const [dummytask, setdummytask] = useState<Task>()
     const [selectedTasksId, setId] = useState<string[]>([])
@@ -178,7 +177,10 @@ const Projectpage: CustomNextPage<Props> = ({ project, myprojects }) => {
                         </div>
                     </div>
                     <div className="w-full">
-                        <TaskInputField setdummytask={setdummytask} />
+                        <TaskInputField
+                            setdummytask={setdummytask}
+                            projectid={project.id}
+                        />
                     </div>
                 </div>
             </div>

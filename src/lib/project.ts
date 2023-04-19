@@ -77,3 +77,20 @@ export const FetchProjectFromId = async (id: string) => {
     const serializedproject = JSON.parse(JSON.stringify(project))
     return serializedproject
 }
+
+export const FetchPlayground = async (username: string) => {
+    const id = await fectchUserId(username)
+    if (!id) return null
+    const playground = await prisma.playground.findUnique({
+        where: {
+            belongs: id.id,
+        },
+    })
+    // cnost projectid = await prisma.playground.findUnique({
+    console.log("#####################################")
+    console.log(playground)
+    // console.log(serializedUser)
+    // console.log(user!.playgroud!)
+    return playground?.projectid
+    // return serializedUser.playgroud as string
+}

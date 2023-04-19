@@ -5,6 +5,7 @@ import { NextPage, GetStaticProps } from "next"
 import ProjectList from "../components/projectList"
 import { Project } from "../types/project"
 import { FetchProjectFromApi } from "../utils/project"
+import Description from "../components/description"
 
 type Repo = {
     id: number
@@ -80,17 +81,22 @@ const Home: NextPage = () => {
         )
     }
     return (
-        <div className="flex justify-center items-center">
-            <h1 className="text-xl w-1/2">
-                You are not signed in. Click{" "}
-                <button
-                    className="text-blue-400"
-                    onClick={() => signIn("github")}>
-                    here
-                </button>{" "}
-                to login.
-            </h1>
-        </div>
+        <>
+            <div className="flex justify-center items-center">
+                <h1 className="text-xl w-1/2">
+                    You are not signed in. Click{" "}
+                    <button
+                        className="text-blue-400"
+                        onClick={() => signIn("github")}>
+                        here
+                    </button>{" "}
+                    to login.
+                </h1>
+            </div>
+            <div className="auto">
+                <Description />
+            </div>
+        </>
     )
 }
 
