@@ -82,8 +82,8 @@ const Home: NextPage = () => {
     }
     return (
         <>
-            <div className="flex justify-center items-center">
-                <h1 className="text-xl w-1/2">
+            <div className="flex flex-wrap  mx-auto w-5/6 px-1/5">
+                <h1 className="text-xl w-full py-5 border-b border-gray-500">
                     You are not signed in. Click{" "}
                     <button
                         className="text-blue-400"
@@ -92,9 +92,9 @@ const Home: NextPage = () => {
                     </button>{" "}
                     to login.
                 </h1>
-            </div>
-            <div className="auto">
-                <Description />
+                <div className="py-5">
+                    <Description />
+                </div>
             </div>
         </>
     )
