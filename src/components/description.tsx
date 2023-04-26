@@ -79,6 +79,11 @@ const Description: React.FC = () => {
                             ④chatgpt
                             apiからの応答をもとにタスクの終了を判定します。
                             タスクが達成されたと判断するとそれをユーザに知らせます。
+                            <a
+                                href="https://github.com/student-ops/efforsiton/blob/c0097a6fc4101bdc7a5703495723bc35c66e7cac/src/pages/api/webhook.ts#L100-L112"
+                                className={defaultLink}>
+                                Github:ソースコード該当部分
+                            </a>
                         </p>
                     </div>
                 </div>
