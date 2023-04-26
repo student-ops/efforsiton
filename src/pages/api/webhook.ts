@@ -40,7 +40,6 @@ export default async function handler(
     await res.status(200).end()
     const result = await InsertWebhookCommit(webhookcommit)
     if (!result) return console.log("insert webhookCommit result is null")
-    // false で絞っているが、切り替えが必要
     let uncheckedCommit: WebhookCommitMinimal[] = []
     // 整理必要。現状pushされたコミットのみをセットしているが、データベースのuncheckedcommitをすべてチェックさせたい。
     uncheckedCommit.push({
@@ -68,6 +67,7 @@ export default async function handler(
         )
     ).then((components) => components.flat())
 
+    // 1500文字以上のコミットは除外、分割できるようにする
     const filteredPrompt = promptcomponent.filter(
         (component) => component.contents.length < 1500
     )
@@ -84,14 +84,6 @@ export default async function handler(
     filteredPrompt.map((prompt) => {
         myPrompts.push(CreatePrompt(prompt, tasksforprompt))
     })
-    console.log("#######################")
-    console.log(myPrompts)
-    console.log("#######################")
-    // let answers: string[] = []
-    // for (const prompt of myPrompts) {
-    //     const answer = await ReqestGpt(prompt, targetwebhook.belongs)
-    //     answers.push(answer)
-    //     console.log(answer)
 
     let answers: Suggestion[][] = []
     for (const prompt of myPrompts) {
@@ -108,7 +100,7 @@ export default async function handler(
     const mergedarray = mergeArrays(answers)
     mergedarray.map(async (answer) => {
         if (!answer.acheived) return
-        const res = await prisma.tasks.update({
+        await prisma.tasks.update({
             where: {
                 id: answer.task_id,
             },
@@ -116,27 +108,7 @@ export default async function handler(
                 suggested: true,
             },
         })
-        console.log(res)
     })
-    // const exitstingsuggestion = await prisma.suggestions.findMany({
-    //     where: {
-    //         belongs: targetwebhook.belongs,
-    //     },
-    // })
-
-    // 修正必須　最初にexitstingを排除する
-    // mergedarray.map((suggest) => {
-    //     exitstingsuggestion.map((exist) => {
-    //         if (suggest.task_id === exist.task_id) return
-    //     })
-    //     prisma.suggestions.create({
-    //         data: {
-    //             belongs: targetwebhook.belongs,
-    //             task_id: suggest.task_id,
-    //             checked: false,
-    //         },
-    //     })
-    // })
     return
 }
 export async function requestWithRetry(

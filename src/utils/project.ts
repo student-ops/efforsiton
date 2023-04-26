@@ -6,7 +6,7 @@ export const FetchProjectFromApi = async () => {
     const projects = await res.json()
 
     if (!res.ok) {
-        throw new Error(`Failed to fetch projects: ${res.statusText}`)
+        console.log(`Failed to fetch projects: ${res.statusText}`)
     }
 
     const projectArray: Project[] = projects.myprojects
