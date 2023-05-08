@@ -127,7 +127,7 @@ const PopUpComponent = ({ suggestions, setTasks, tasks }: Props) => {
                                     className={cancelButton}>
                                     No at all
                                 </button>
-                                <button className="" onClick={achiveSelected}>
+                                <button className="text-white inline-flex float-right shadow  items-center bg-yellow-400 border-0 py-1 px-4 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0" onClick={achiveSelected}>
                                     Achieve only selected
                                 </button>
                                 <button
