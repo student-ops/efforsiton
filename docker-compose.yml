@@ -2,7 +2,7 @@ version: "3"
 services:
     db:
         image: postgres:latest
-        container_name: postgres
+        container_name: efforsition-postgres
         ports:
             - "5432:5432"
         environment:
@@ -17,9 +17,17 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - "80:3000"
+            - "3000:3000"
             - "5555:5555"
         environment:
             NODE_ENV: "production"
+        working_dir: /workspace
+        # volumes:
+            # - .:/workspace:cached
+            # - node-module-volume:/workspace/node_modules
+            # - nuxt-volume:/workspace/.nuxt
         depends_on:
             - db
+# volumes:
+    # node-module-volume:
+    # nuxt-volume:
