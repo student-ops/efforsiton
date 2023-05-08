@@ -1,10 +1,10 @@
 # What is this app ?
 
-github、chatgpt api と密に連動した開発者向けのタスク管理アプリです。
+**Efforsitionはgithub、chatgpt api と密に連動した開発者向けのタスク管理アプリです。**
 <br>
 cahtgpt api を使用してコードの差分から実装された機能を推測し、開発の進捗状況を把握することが目的です。
 <br>
-ユーザーは github アカウントでサインインし、webhook を使用してレポジトリの更新を検知します。
+ユーザーは github アカウントでサインインし、本アプリはgithub webhookからレポジトリの更新を検知します。
 <br>
 検知した更新をもとにアプリ内で作成したタスクの達成を自動で判定、管理します。
 
@@ -22,7 +22,7 @@ cahtgpt api を使用してコードの差分から実装された機能を推�
 -   Next.js
 -   Reat.js
 -   Typescript
--   TailWind ...
+-   TailWindCss ...
 
 バックエンド
 
@@ -36,21 +36,25 @@ cahtgpt api を使用してコードの差分から実装された機能を推�
 
 <a href="https://aws.amazon.com/" title="AWS"><img src="https://github.com/get-icon/geticon/raw/master/icons/aws.svg" alt="AWS" width="38px" height="38px"></a>
 <a href="https://www.docker.com/" title="docker"><img src="https://github.com/get-icon/geticon/raw/master/icons/docker-icon.svg" alt="docker" width="38px" height="38px"></a>
+<a href="https://www.postgresql.org/" title="PostgreSQL"><img src="https://github.com/get-icon/geticon/raw/master/icons/postgresql.svg" alt="PostgreSQL" width="38px" height="38px"></a>
+
 
 -   Dcoker
 -   AWS
+-   postgres
 
 <sup>porwerd by <a href="https://github.com/get-icon/geticon">geticon</a></sup>
 
 # 詳細
 
-このアプリではユーザはプロジェクトとタスクを自由に成できます。
-プロジェクトとタスクは 1 対他の関係で api からデータベースにも保存されます。
-
+サインアップしたユーザはアプリ内でプロジェクトとタスクを自由に作成できます。
+<br>
+プロジェクトとタスクは 1 対他の関係になっており、これらはapi越しにデータベースにも保存されます。
+<br>
 ログインしている github アカウントのリポジトリとアプリ内のプロジェクトを連携させることができ、そうすることでレポジトリに webhook が作成され、push データがこのアプリに送信されます。
-
+<br>
 push データが送信されるとそのデータをもとに chatgpt api 送信するプロンプトを作成しその応答をもとにタスクの終了を判定します。
-
+<br>
 タスクが達成されたと判断するとそれをユーザに知らせます。
 
 <details>
@@ -102,13 +106,3 @@ ChatGPT API を活用してコードの差分から実装された機能を推�
 ## 修正ポイント
 
 動作環境を移行する
-
-## mem
-
-webhook からのリクエストで以下のような json が生成されこれをもとにプロンプトを作成。
-
-by /src/pages/api/webhook.ts
-
-## want to modefy
-
-プロンプトに入れるためのフィルタの方法を考えたい?
