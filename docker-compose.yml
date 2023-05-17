@@ -3,8 +3,6 @@ services:
     db:
         image: postgres:latest
         container_name: efforsition-postgres
-        ports:
-            - "5432:5432"
         environment:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: password
@@ -17,7 +15,7 @@ services:
             context: .
             dockerfile: Dockerfile
         ports:
-            - "3000:3000"
+            - "80:3000"
             - "5555:5555"
         environment:
             NODE_ENV: "production"
