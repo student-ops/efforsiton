@@ -4,17 +4,18 @@ FROM node:18-alpine3.16
 
 RUN mkdir /workspace
 WORKDIR /workspace
+COPY ./package.json .
+COPY ./package-lock.json .
+RUN npm install
+
 
 # Copy the current directory contents into the container at /app
 COPY . .
 RUN rm -r .env
 RUN mv .docker.env .env
-RUN cat .env
 RUN rm -r prisma/migrations
 
 # Install any needed packages specified in package.json
-RUN npm install -g npm@9.6.1 -y
-RUN npm install
 RUN npm run build
 
 # Make port 80 available to the world outside this container
